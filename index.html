@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<title>Sh-chat | مجتمعك</title>
+<style>
+:root{--bg:#f3f7f7;--card:#fff;--ink:#172326;--muted:#647479;--line:#e2e9e9;--brand:#0f766e;--brand-dark:#0b5c56;--soft:#e6f5f2;--danger:#a92e3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:wait}
+header{position:sticky;top:0;z-index:4;background:#ffffffed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.bar{max-width:1000px;margin:auto;display:flex;align-items:center;gap:12px;padding:10px 14px}.logo{display:flex;align-items:center;gap:9px;font-size:22px;font-weight:900;color:var(--brand);white-space:nowrap}.mark{display:grid;place-items:center;background:linear-gradient(135deg,#0f766e,#3bb9a9);color:white;border-radius:13px;width:40px;height:40px}.search{flex:1;min-width:40px;border:1px solid var(--line);background:#f5f8f8;border-radius:99px;padding:11px 14px;outline-color:var(--brand)}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:750}.primary{background:var(--brand);color:#fff}.primary:hover{background:var(--brand-dark)}.light{background:var(--soft);color:var(--brand)}.mutedbtn{background:#f0f4f4;color:#3d5054}.wrap{max-width:1000px;margin:20px auto;padding:0 12px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px}.panel,.card{background:var(--card);border:1px solid var(--line);border-radius:17px;box-shadow:0 3px 12px #1b373607}.panel{padding:16px;height:max-content;position:sticky;top:75px}.sideprofile{display:flex;gap:10px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--brand);font-weight:900;flex-shrink:0}.small{font-size:12px;color:var(--muted);line-height:1.7}.nav{padding:11px 9px;border-radius:10px;margin-top:5px;color:#43565a}.nav.active{background:var(--soft);color:var(--brand);font-weight:800}.main{min-width:0}.hero{padding:19px;background:linear-gradient(130deg,#0f766e,#159889);color:white;margin-bottom:14px}.hero h1{margin:0 0 7px;font-size:25px}.hero p{margin:0;line-height:1.8;color:#e1fffa}.composer{padding:15px;margin-bottom:14px}.compose-row{display:flex;gap:10px}.compose-row textarea{flex:1;min-width:0;min-height:78px;resize:vertical;border:1px solid var(--line);border-radius:13px;padding:12px;outline-color:var(--brand)}.compose-tools{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}.post{padding:16px;margin-bottom:13px}.posthead{display:flex;gap:10px;align-items:center}.name{font-weight:850}.time{font-size:12px;color:var(--muted);margin-top:2px}.posttext{white-space:pre-wrap;line-height:1.9;margin:14px 0}.postimg{display:block;width:100%;max-height:430px;object-fit:contain;background:#f2f5f5;border-radius:13px;margin:10px 0}.actions{display:flex;gap:7px;border-top:1px solid var(--line);padding-top:11px}.action{flex:1;background:#f4f7f7;border:0;border-radius:10px;padding:9px 4px;color:#46595c;font-weight:700}.action.liked{color:#bd2948;background:#fff0f3}.comments{display:none;margin-top:12px}.comments.show{display:block}.comment{padding:9px 11px;background:#f4f7f7;border-radius:11px;margin:7px 0;font-size:14px;overflow-wrap:anywhere}.commentform{display:flex;gap:7px;margin-top:9px}.commentform input{min-width:0;flex:1;border:1px solid var(--line);border-radius:10px;padding:10px}.empty{text-align:center;padding:25px;color:var(--muted)}.notice{padding:11px 13px;border-radius:11px;background:#eef7ff;color:#204f71;font-size:13px;line-height:1.7;margin:0 0 12px}.error{background:#fff0f0;color:var(--danger)}.success{background:#eaf8ef;color:#20623a}.status{font-size:12px;color:var(--muted);margin-top:12px}.modalback{display:none;position:fixed;inset:0;background:#10232699;z-index:10;align-items:center;justify-content:center;padding:16px}.modalback.show{display:flex}.modal{background:white;border-radius:18px;padding:21px;width:min(430px,100%);box-shadow:0 18px 50px #0003}.modal h2{margin:0 0 8px}.modal label{display:block;font-size:14px;margin-top:12px}.modal input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:6px}.modalbuttons{display:flex;gap:8px;margin-top:14px}.modalbuttons button{flex:1}.footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+@media(max-width:740px){.wrap{display:block;margin:13px auto}.side{display:none}.bar{gap:8px;padding:8px 10px}.logo{font-size:18px}.mark{width:35px;height:35px}.search{font-size:13px;padding:10px}.btn{font-size:13px;padding:9px 10px}.hero h1{font-size:22px}.post,.composer{padding:12px}.action{font-size:12px}.compose-row .avatar{display:none}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+ <div class="logo"><div class="mark">SH</div><span>Sh-chat</span></div>
+ <input id="search" class="search" placeholder="ابحث في المنشورات..." aria-label="بحث">
+ <button id="authButton" class="btn light">دخول برقم الهاتف</button>
+</div></header>
+<div class="wrap">
+ <aside class="panel side">
+  <div class="sideprofile"><div class="avatar">SH</div><div><b id="sideName">مجتمع Sh-chat</b><div class="small" id="sideStatus">زائر</div></div></div>
+  <div class="nav active">⌂　الرئيسية</div><div class="nav">◎　المنشورات العامة</div><div class="nav">♡　الإعجابات</div>
+  <p class="small" style="margin-top:15px">تُحمّل المنشورات من قاعدة بيانات Supabase. يلزم تسجيل الدخول للنشر والتعليق والإعجاب.</p>
+ </aside>
+ <main class="main">
+  <section class="card hero"><h1>أهلًا بك في Sh-chat 👋</h1><p>شارك أفكارك وصورك، وتفاعل مع مجتمعك.</p></section>
+  <div id="notice" class="notice">جارٍ الاتصال بقاعدة البيانات…</div>
+  <section class="card composer">
+   <div class="compose-row"><div class="avatar" id="myAvatar">؟</div><textarea id="postText" placeholder="ماذا تريد أن تشارك اليوم؟" maxlength="5000"></textarea></div>
+   <div class="compose-tools"><div><label class="btn mutedbtn" for="imageFile">＋ إضافة صورة</label><input id="imageFile" type="file" accept="image/*" hidden><span id="imageName" class="small">اختياري، حتى 5 ميغابايت</span></div><button id="publish" class="btn primary">نشر المنشور</button></div>
+   <div class="small" style="margin-top:8px">نشر المحتوى يتطلب تسجيل الدخول. الصور تحتاج إلى إعداد مساحة تخزين باسم <code>post-images</code>.</div>
+  </section>
+  <div id="feed"></div>
+ </main>
+</div>
+<div class="footer">Sh-chat · نسخة أولية متصلة بـ Supabase · إعدادات تسجيل الهاتف وSMS يجب تفعيلها قبل استخدام OTP.</div>
+<div class="modalback" id="authModal"><div class="modal">
+ <h2 id="modalTitle">تسجيل الدخول برقم الهاتف</h2><p class="small">اكتب الرقم بصيغة دولية مثل +9677XXXXXXXX. سيُرسل رمز SMS فقط بعد تفعيل Phone Provider وإعداد مزوّد الرسائل في Supabase.</p>
+ <label for="phone">رقم الهاتف</label><input id="phone" type="tel" placeholder="+9677XXXXXXXX" autocomplete="tel">
+ <div id="otpArea" hidden><label for="otp">رمز التحقق</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="أدخل الرمز الذي وصلك"></div>
+ <div id="authMsg" class="notice" style="margin-top:12px">لم يتم إرسال أي رمز بعد.</div>
+ <div class="modalbuttons"><button id="sendOtp" class="btn primary">إرسال رمز التحقق</button><button id="verifyOtp" class="btn light" hidden>تأكيد الرمز</button></div>
+ <button id="closeModal" class="btn mutedbtn" style="width:100%;margin-top:9px">إغلاق</button>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://inrkzwsnmkmjrgrliusg.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_YbLUN2mYUhvWKt4o-TRcUg__cLCmW8V";
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let currentUser = null, pendingFile = null, cachedPosts = [], commentsOpen = new Set();
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function notify(message, kind="") { $("notice").className="notice"+(kind?" "+kind:""); $("notice").textContent=message; }
+function authMessage(message,kind="") { $("authMsg").className="notice"+(kind?" "+kind:""); $("authMsg").textContent=message; }
+function friendlyTime(v){try{return new Date(v).toLocaleString("ar",{dateStyle:"medium",timeStyle:"short"})}catch{return "الآن"}}
+async function ensureProfile(user){
+ const {error}=await db.from("profiles").upsert({id:user.id, username:user.phone || null, full_name:user.user_metadata?.full_name || "مستخدم Sh-chat"},{onConflict:"id",ignoreDuplicates:true});
+ if(error) console.warn("Profile setup:",error.message);
+}
+async function refreshAuth(){
+ const {data:{session}}=await db.auth.getSession();
+ currentUser=session?.user||null;
+ $("authButton").textContent=currentUser?"خروج":"دخول برقم الهاتف";
+ $("sideName").textContent=currentUser?(currentUser.phone||"مستخدم Sh-chat"):"مجتمع Sh-chat";
+ $("sideStatus").textContent=currentUser?"مسجّل الدخول":"زائر";
+ $("myAvatar").textContent=currentUser?"أنت":"؟";
+ if(currentUser) await ensureProfile(currentUser);
+}
+async function loadFeed(){
+ const {data:posts,error}=await db.from("posts").select("id,user_id,content,image_url,created_at").order("created_at",{ascending:false}).limit(50);
+ if(error){notify("تعذّر تحميل المنشورات: "+error.message+" — تأكد من وجود جدول posts وسياسة SELECT في RLS.","error");return;}
+ const ids=(posts||[]).map(p=>p.id);
+ let profiles={}, likes=[], comments=[];
+ if(ids.length){
+  const [pr,li,co]=await Promise.all([
+   db.from("profiles").select("id,username,full_name").in("id",[...new Set((posts||[]).map(p=>p.user_id))]),
+   db.from("likes").select("post_id,user_id").in("post_id",ids),
+   db.from("comments").select("id,post_id,user_id,content,created_at").in("post_id",ids).order("created_at",{ascending:true})
+  ]);
+  (pr.data||[]).forEach(p=>profiles[p.id]=p);
+  likes=li.data||[]; comments=co.data||[];
+  if(li.error) console.warn("Likes load:",li.error.message);
+  if(co.error) console.warn("Comments load:",co.error.message);
+ }
+ cachedPosts=(posts||[]).map(p=>({...p,author:profiles[p.user_id]?.full_name||profiles[p.user_id]?.username||"مستخدم",likeRows:likes.filter(l=>l.post_id===p.id),commentRows:comments.filter(c=>c.post_id===p.id)}));
+ renderFeed();
+ notify(currentUser?"متصل بقاعدة البيانات. يمكنك النشر والتفاعل.":"متصل بقاعدة البيانات. سجّل الدخول للنشر والتعليق والإعجاب.","success");
+}
+function renderFeed(){
+ const q=$("search").value.trim().toLowerCase();
+ const list=cachedPosts.filter(p=>((p.content||"")+" "+p.author).toLowerCase().includes(q));
+ if(!list.length){$("feed").innerHTML='<div class="card empty">لا توجد منشورات بعد. كن أول من ينشر! </div>';return;}
+ $("feed").innerHTML=list.map(p=>{
+  const likes=p.likeRows||[], comments=p.commentRows||[], liked=!!currentUser&&likes.some(l=>l.user_id===currentUser.id), open=commentsOpen.has(p.id);
+  return `<article class="card post" data-id="${p.id}">
+   <div class="posthead"><div class="avatar">${esc((p.author||"م").slice(0,2))}</div><div><div class="name">${esc(p.author)}</div><div class="time">${esc(friendlyTime(p.created_at))}</div></div></div>
+   ${p.content?`<div class="posttext">${esc(p.content)}</div>`:""}
+   ${p.image_url?`<img class="postimg" src="${esc(p.image_url)}" alt="صورة المنشور" loading="lazy">`:""}
+   <div class="actions"><button class="action ${liked?"liked":""}" data-act="like">♥ ${likes.length} إعجاب</button><button class="action" data-act="comments">💬 التعليقات (${comments.length})</button>${currentUser&&p.user_id===currentUser.id?'<button class="action" data-act="delete">حذف</button>':'<button class="action" data-act="share">↗ مشاركة</button>'}</div>
+   <div class="comments ${open?"show":""}" id="comments-${p.id}">${comments.map(c=>`<div class="comment"><b>${esc(c.user_id===currentUser?.id?"أنت":"مستخدم")}:</b> ${esc(c.content)}</div>`).join("")}
+    <form class="commentform"><input name="comment" placeholder="${currentUser?"اكتب تعليقًا…":"سجّل الدخول للتعليق"}" maxlength="1000" required ${currentUser?"":"disabled"}><button class="btn primary" ${currentUser?"":"disabled"}>إرسال</button></form>
+   </div></article>`;
+ }).join("");
+}
+$("authButton").addEventListener("click",async()=>{
+ if(currentUser){const {error}=await db.auth.signOut();if(error)notify(error.message,"error");await refreshAuth();await loadFeed();}
+ else {$("authModal").classList.add("show");$("otpArea").hidden=true;$("verifyOtp").hidden=true;$("sendOtp").hidden=false;authMessage("أدخل رقمك بصيغة دولية. يتطلب إرسال الرمز تفعيل Phone Provider وإعداد SMS في Supabase.");}
+});
+$("closeModal").onclick=()=>$("authModal").classList.remove("show");
+$("authModal").addEventListener("click",e=>{if(e.target===$("authModal"))$("authModal").classList.remove("show")});
+$("sendOtp").onclick=async()=>{
+ const phone=$("phone").value.trim();if(!/^\+[1-9]\d{7,14}$/.test(phone)){authMessage("أدخل رقمًا دوليًا صحيحًا، مثل +9677XXXXXXXX.","error");return;}
+ $("sendOtp").disabled=true;
+ const {error}=await db.auth.signInWithOtp({phone});
+ $("sendOtp").disabled=false;
+ if(error){authMessage("لم يُرسل الرمز: "+error.message+". تحقق من تفعيل Phone Provider وإعداد مزوّد SMS في Supabase.","error");return;}
+ $("otpArea").hidden=false;$("verifyOtp").hidden=false;$("sendOtp").hidden=true;authMessage("تم طلب الرمز. أدخله عند وصوله إلى هاتفك.","success");
+};
+$("verifyOtp").onclick=async()=>{
+ const phone=$("phone").value.trim(),token=$("otp").value.trim();
+ if(!token){authMessage("أدخل رمز التحقق.","error");return;}
+ $("verifyOtp").disabled=true;
+ const {data,error}=await db.auth.verifyOtp({phone,token,type:"sms"});
+ $("verifyOtp").disabled=false;
+ if(error){authMessage("تعذّر التحقق: "+error.message,"error");return;}
+ currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await loadFeed();
+};
+$("imageFile").addEventListener("change",e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ if(!f.type.startsWith("image/")){notify("اختر ملف صورة فقط.","error");return;}
+ if(f.size>5*1024*1024){notify("حجم الصورة أكبر من 5 ميغابايت.","error");e.target.value="";return;}
+ pendingFile=f;$("imageName").textContent=f.name;
+});
+$("publish").onclick=async()=>{
+ if(!currentUser){$("authButton").click();return;}
+ const content=$("postText").value.trim();if(!content&&!pendingFile){notify("اكتب نصًا أو اختر صورة أولًا.","error");return;}
+ $("publish").disabled=true;let image_url=null;
+ try{
+  if(pendingFile){
+   const ext=(pendingFile.name.split(".").pop()||"jpg").replace(/[^a-zA-Z0-9]/g,"").slice(0,8)||"jpg";
+   const path=`${currentUser.id}/${crypto.randomUUID()}.${ext}`;
+   const {error:upErr}=await db.storage.from("post-images").upload(path,pendingFile,{upsert:false,contentType:pendingFile.type});
+   if(upErr)throw new Error("رفع الصورة لم ينجح. أنشئ Storage bucket باسم post-images واضبط سياسات التخزين أولًا. التفاصيل: "+upErr.message);
+   const {data}=db.storage.from("post-images").getPublicUrl(path);image_url=data.publicUrl;
+  }
+  const {error}=await db.from("posts").insert({user_id:currentUser.id,content:content||null,image_url});
+  if(error)throw error;
+  $("postText").value="";$("imageFile").value="";$("imageName").textContent="اختياري، حتى 5 ميغابايت";pendingFile=null;await loadFeed();
+ }catch(e){notify("تعذّر النشر: "+(e.message||"خطأ غير معروف"),"error");}
+ finally{$("publish").disabled=false;}
+};
+$("feed").addEventListener("click",async e=>{
+ const b=e.target.closest("button[data-act]");if(!b)return;const art=b.closest(".post"),id=Number(art.dataset.id),p=cachedPosts.find(x=>x.id===id);if(!p)return;
+ const act=b.dataset.act;
+ if(act==="comments"){commentsOpen.has(id)?commentsOpen.delete(id):commentsOpen.add(id);renderFeed();return;}
+ if(act==="share"){const text=`${p.author} على Sh-chat:\n${p.content||""}\n${p.image_url||""}`;if(navigator.share){navigator.share({title:"Sh-chat",text}).catch(()=>{});}else{try{await navigator.clipboard.writeText(text);notify("تم نسخ تفاصيل المنشور للمشاركة.","success")}catch{notify(text)}}return;}
+ if(!currentUser){$("authButton").click();return;}
+ b.disabled=true;
+ try{
+  if(act==="like"){
+   const mine=p.likeRows.some(l=>l.user_id===currentUser.id);
+   if(mine){const {error}=await db.from("likes").delete().eq("post_id",id).eq("user_id",currentUser.id);if(error)throw error;}
+   else{const {error}=await db.from("likes").insert({post_id:id,user_id:currentUser.id});if(error)throw error;}
+   await loadFeed();
+  }else if(act==="delete"){
+   if(!confirm("هل تريد حذف هذا المنشور؟"))return;
+   const {error}=await db.from("posts").delete().eq("id",id);if(error)throw error;await loadFeed();
+  }
+ }catch(err){notify("تعذّر تنفيذ العملية: "+err.message,"error");}
+ finally{b.disabled=false;}
+});
+$("feed").addEventListener("submit",async e=>{
+ if(!e.target.matches(".commentform"))return;e.preventDefault();
+ if(!currentUser){$("authButton").click();return;}
+ const art=e.target.closest(".post"),id=Number(art.dataset.id),input=e.target.elements.comment,content=input.value.trim();if(!content)return;
+ const button=e.target.querySelector("button");button.disabled=true;
+ const {error}=await db.from("comments").insert({post_id:id,user_id:currentUser.id,content});
+ button.disabled=false;
+ if(error){notify("تعذّر إضافة التعليق: "+error.message,"error");return;}
+ commentsOpen.add(id);await loadFeed();
+});
+$("search").addEventListener("input",renderFeed);
+db.auth.onAuthStateChange(async()=>{await refreshAuth();await loadFeed();});
+(async()=>{try{await refreshAuth();await loadFeed();}catch(e){notify("تعذّر الاتصال: "+e.message,"error");}})();
+</script>
+</body>
+</html>
