@@ -16,7 +16,7 @@ header{position:sticky;top:0;z-index:4;background:#ffffffed;backdrop-filter:blur
 <header><div class="bar">
  <div class="logo"><div class="mark">SH</div><span>Sh-chat</span></div>
  <input id="search" class="search" placeholder="ابحث في المنشورات..." aria-label="بحث">
- <button id="authButton" class="btn light">دخول برقم الهاتف</button>
+ <button id="authButton" class="btn light">دخول / إنشاء حساب</button>
 </div></header>
 <div class="wrap">
  <aside class="panel side">
@@ -35,13 +35,14 @@ header{position:sticky;top:0;z-index:4;background:#ffffffed;backdrop-filter:blur
   <div id="feed"></div>
  </main>
 </div>
-<div class="footer">Sh-chat · نسخة أولية متصلة بـ Supabase · إعدادات تسجيل الهاتف وSMS يجب تفعيلها قبل استخدام OTP.</div>
+<div class="footer">Sh-chat · شبكة اجتماعية تجريبية · التسجيل متاح بالبريد الإلكتروني.</div>
 <div class="modalback" id="authModal"><div class="modal">
- <h2 id="modalTitle">تسجيل الدخول برقم الهاتف</h2><p class="small">اكتب الرقم بصيغة دولية مثل +9677XXXXXXXX. سيُرسل رمز SMS فقط بعد تفعيل Phone Provider وإعداد مزوّد الرسائل في Supabase.</p>
- <label for="phone">رقم الهاتف</label><input id="phone" type="tel" placeholder="+9677XXXXXXXX" autocomplete="tel">
- <div id="otpArea" hidden><label for="otp">رمز التحقق</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="أدخل الرمز الذي وصلك"></div>
- <div id="authMsg" class="notice" style="margin-top:12px">لم يتم إرسال أي رمز بعد.</div>
- <div class="modalbuttons"><button id="sendOtp" class="btn primary">إرسال رمز التحقق</button><button id="verifyOtp" class="btn light" hidden>تأكيد الرمز</button></div>
+ <h2 id="modalTitle">الدخول إلى Sh-chat</h2><p id="authIntro" class="small">سجّل الدخول أو أنشئ حسابًا جديدًا باستخدام بريدك الإلكتروني.</p>
+ <div id="nameField" hidden><label for="fullName">الاسم الظاهر</label><input id="fullName" type="text" maxlength="80" placeholder="اكتب اسمك" autocomplete="name"></div>
+ <label for="email">البريد الإلكتروني</label><input id="email" type="email" placeholder="name@example.com" autocomplete="email" required>
+ <label for="password">كلمة المرور</label><input id="password" type="password" minlength="6" placeholder="6 أحرف على الأقل" autocomplete="current-password" required>
+ <div id="authMsg" class="notice" style="margin-top:12px">يمكن لأي شخص إنشاء حساب جديد.</div>
+ <div class="modalbuttons"><button id="submitAuth" class="btn primary">تسجيل الدخول</button><button id="toggleAuthMode" class="btn light">إنشاء حساب جديد</button></div>
  <button id="closeModal" class="btn mutedbtn" style="width:100%;margin-top:9px">إغلاق</button>
 </div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -50,21 +51,22 @@ const SUPABASE_URL = "https://inrkzwsnmkmjrgrliusg.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_YbLUN2mYUhvWKt4o-TRcUg__cLCmW8V";
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-let currentUser = null, pendingFile = null, cachedPosts = [], commentsOpen = new Set();
+let currentUser = null, pendingFile = null, cachedPosts = [], commentsOpen = new Set(), authMode = "login";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function notify(message, kind="") { $("notice").className="notice"+(kind?" "+kind:""); $("notice").textContent=message; }
 function authMessage(message,kind="") { $("authMsg").className="notice"+(kind?" "+kind:""); $("authMsg").textContent=message; }
 function friendlyTime(v){try{return new Date(v).toLocaleString("ar",{dateStyle:"medium",timeStyle:"short"})}catch{return "الآن"}}
 async function ensureProfile(user){
- const {error}=await db.from("profiles").upsert({id:user.id, username:user.phone || null, full_name:user.user_metadata?.full_name || "مستخدم Sh-chat"},{onConflict:"id",ignoreDuplicates:true});
+ const emailName=(user.email||"").split("@")[0];
+ const {error}=await db.from("profiles").upsert({id:user.id, username:user.user_metadata?.username || emailName || null, full_name:user.user_metadata?.full_name || emailName || "مستخدم Sh-chat"},{onConflict:"id",ignoreDuplicates:true});
  if(error) console.warn("Profile setup:",error.message);
 }
 async function refreshAuth(){
  const {data:{session}}=await db.auth.getSession();
  currentUser=session?.user||null;
- $("authButton").textContent=currentUser?"خروج":"دخول برقم الهاتف";
- $("sideName").textContent=currentUser?(currentUser.phone||"مستخدم Sh-chat"):"مجتمع Sh-chat";
+ $("authButton").textContent=currentUser?"خروج":"دخول / إنشاء حساب";
+ $("sideName").textContent=currentUser?(currentUser.user_metadata?.full_name||(currentUser.email||"").split("@")[0]||"مستخدم Sh-chat"):"مجتمع Sh-chat";
  $("sideStatus").textContent=currentUser?"مسجّل الدخول":"زائر";
  $("myAvatar").textContent=currentUser?"أنت":"؟";
  if(currentUser) await ensureProfile(currentUser);
@@ -105,28 +107,42 @@ function renderFeed(){
    </div></article>`;
  }).join("");
 }
+function setAuthMode(mode){
+ authMode=mode;
+ $("modalTitle").textContent=mode==="signup"?"إنشاء حساب جديد":"الدخول إلى Sh-chat";
+ $("authIntro").textContent=mode==="signup"?"أنشئ حسابك بالبريد الإلكتروني. إذا كان تأكيد البريد مفعّلًا، افتح رسالة التأكيد بعد التسجيل.":"أدخل بريدك الإلكتروني وكلمة المرور للدخول إلى حسابك.";
+ $("nameField").hidden=mode!=="signup";
+ $("password").autocomplete=mode==="signup"?"new-password":"current-password";
+ $("submitAuth").textContent=mode==="signup"?"إنشاء الحساب":"تسجيل الدخول";
+ $("toggleAuthMode").textContent=mode==="signup"?"لدي حساب بالفعل":"إنشاء حساب جديد";
+ authMessage(mode==="signup"?"التسجيل متاح للجميع. استخدم بريدًا إلكترونيًا يمكنك فتحه.":"مرحبًا بعودتك إلى Sh-chat.");
+}
 $("authButton").addEventListener("click",async()=>{
  if(currentUser){const {error}=await db.auth.signOut();if(error)notify(error.message,"error");await refreshAuth();await loadFeed();}
- else {$("authModal").classList.add("show");$("otpArea").hidden=true;$("verifyOtp").hidden=true;$("sendOtp").hidden=false;authMessage("أدخل رقمك بصيغة دولية. يتطلب إرسال الرمز تفعيل Phone Provider وإعداد SMS في Supabase.");}
+ else {$("authModal").classList.add("show");setAuthMode("login");}
 });
 $("closeModal").onclick=()=>$("authModal").classList.remove("show");
 $("authModal").addEventListener("click",e=>{if(e.target===$("authModal"))$("authModal").classList.remove("show")});
-$("sendOtp").onclick=async()=>{
- const phone=$("phone").value.trim();if(!/^\+[1-9]\d{7,14}$/.test(phone)){authMessage("أدخل رقمًا دوليًا صحيحًا، مثل +9677XXXXXXXX.","error");return;}
- $("sendOtp").disabled=true;
- const {error}=await db.auth.signInWithOtp({phone});
- $("sendOtp").disabled=false;
- if(error){authMessage("لم يُرسل الرمز: "+error.message+". تحقق من تفعيل Phone Provider وإعداد مزوّد SMS في Supabase.","error");return;}
- $("otpArea").hidden=false;$("verifyOtp").hidden=false;$("sendOtp").hidden=true;authMessage("تم طلب الرمز. أدخله عند وصوله إلى هاتفك.","success");
-};
-$("verifyOtp").onclick=async()=>{
- const phone=$("phone").value.trim(),token=$("otp").value.trim();
- if(!token){authMessage("أدخل رمز التحقق.","error");return;}
- $("verifyOtp").disabled=true;
- const {data,error}=await db.auth.verifyOtp({phone,token,type:"sms"});
- $("verifyOtp").disabled=false;
- if(error){authMessage("تعذّر التحقق: "+error.message,"error");return;}
- currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await loadFeed();
+$("toggleAuthMode").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
+$("submitAuth").onclick=async()=>{
+ const email=$("email").value.trim(), password=$("password").value, fullName=$("fullName").value.trim();
+ if(!email){authMessage("أدخل بريدك الإلكتروني.","error");return;}
+ if(password.length<6){authMessage("كلمة المرور يجب أن تكون 6 أحرف على الأقل.","error");return;}
+ if(authMode==="signup"&&!fullName){authMessage("اكتب الاسم الذي سيظهر للآخرين.","error");return;}
+ const btn=$("submitAuth");btn.disabled=true;
+ try{
+  if(authMode==="signup"){
+   const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:fullName,username:email.split("@")[0]},emailRedirectTo:location.href}});
+   if(error)throw error;
+   if(data.session){currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await loadFeed();notify("تم إنشاء حسابك بنجاح.","success");}
+   else{setAuthMode("login");authMessage("تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد، ثم ارجع وسجّل الدخول.","success");}
+  }else{
+   const {data,error}=await db.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await loadFeed();notify("تم تسجيل الدخول بنجاح.","success");
+  }
+ }catch(error){authMessage("تعذّر إكمال العملية: "+(error.message||"خطأ غير معروف"),"error");}
+ finally{btn.disabled=false;}
 };
 $("imageFile").addEventListener("change",e=>{
  const f=e.target.files?.[0];if(!f)return;
