@@ -109,7 +109,7 @@ header{
 .name{font-size:14px;font-weight:900;color:#14213a}
 .time{font-size:11px;color:#8b96a9}
 .posttext{font-size:15px;line-height:2;color:#2a3850;margin:16px 0}
-.postimg{max-height:520px;border-radius:17px;background:#f5f7fb;border:1px solid #edf0f6}
+.postimg{width:100%;height:420px;max-height:none;object-fit:cover;object-position:center;display:block;border-radius:17px;background:#0a1220;border:1px solid #2a3851}
 .actions{gap:8px;border-top:1px solid #edf0f6;padding-top:13px;margin-top:14px}
 .action{border:1px solid transparent;border-radius:12px;background:#f5f7fb;padding:11px 8px;color:#53627a;font-size:13px}
 .action:hover{background:#edf3ff;color:#245bd7}
@@ -200,7 +200,7 @@ header{
   .posthead{gap:9px}
   .posthead .avatar{width:40px;height:40px;border-radius:13px}
   .posttext{font-size:14px;line-height:1.95;margin:13px 0}
-  .postimg{max-height:390px;border-radius:13px}
+  .postimg{height:min(390px,78vw);max-height:none;object-fit:cover;border-radius:13px}
   .actions{gap:5px;padding-top:10px;margin-top:10px}
   .action{padding:10px 3px;font-size:11px;border-radius:10px}
   .commentform{gap:6px}
@@ -301,6 +301,22 @@ header{background:rgba(7,15,30,.9);border-bottom:1px solid #25334c;box-shadow:0 
 .reel-comments-toggle{border:0;background:transparent;color:#e7c96c;font-weight:700;margin-bottom:8px}
 @media(min-width:761px){.reel-card{flex-basis:300px;height:560px}}
 @media(max-width:760px){.video-section{padding:13px;border-radius:17px}.video-section-head{align-items:flex-start}.video-section-head .btn{white-space:nowrap;padding:9px 11px}.reel-card{flex-basis:78vw;height:65vh;min-height:380px;max-height:620px}.reels-feed{margin-right:-2px}}
+
+/* SH-CHAT: الصور تملأ إطار المنشور على الكمبيوتر والهاتف */
+.postimg{
+  display:block;
+  width:100%;
+  height:420px;
+  max-height:none;
+  object-fit:cover;
+  object-position:center;
+  border-radius:17px;
+  margin:12px 0;
+  background:#0a1220;
+}
+@media(max-width:760px){
+  .postimg{height: min(78vw, 390px); min-height:220px; max-height:none; border-radius:13px;}
+}
 </style>
 </head>
 <body>
@@ -355,7 +371,7 @@ header{background:rgba(7,15,30,.9);border-bottom:1px solid #25334c;box-shadow:0 
 </div>
 <nav class="mobile-nav"><button data-page="home"><span>⌂</span>الرئيسية</button><button data-page="profile"><span>◉</span>ملفي</button><button data-page="friends"><span>♧</span>الأصدقاء</button><button data-page="chat"><span>✉</span>الدردشة</button><button data-page="settings"><span>⚙</span>الإعدادات</button></nav>
 <div class="footer">SH-CHAT · تواصل بلا حدود</div>
-<div class="modalback" id="authModal"><div class="modal"><h2 id="modalTitle">الدخول إلى SH-CHAT</h2><p id="authIntro" class="small">سجّل الدخول أو أنشئ حسابًا جديدًا بالبريد الإلكتروني.</p><div id="nameField" class="hidden"><label for="fullName">الاسم الظاهر</label><input id="fullName" class="field" maxlength="80" placeholder="اكتب اسمك" autocomplete="name"></div><label for="email">البريد الإلكتروني</label><input id="email" class="field" type="email" placeholder="name@example.com" autocomplete="email"><label for="password">كلمة المرور</label><input id="password" class="field" type="password" minlength="6" placeholder="6 أحرف على الأقل" autocomplete="current-password"><div id="authMsg" class="notice" style="margin-top:12px">يمكن لأي شخص إنشاء حساب.</div><div class="modalbuttons"><button id="submitAuth" class="btn primary">تسجيل الدخول</button><button id="toggleAuthMode" class="btn secondary">إنشاء حساب جديد</button></div><button id="closeModal" class="btn ghost" style="width:100%;margin-top:9px">إغلاق</button></div></div>
+<div class="modalback" id="authModal"><div class="modal"><h2 id="modalTitle">الدخول إلى SH-CHAT</h2><p id="authIntro" class="small">سجّل الدخول أو أنشئ حسابًا جديدًا بالبريد الإلكتروني.</p><div id="nameField" class="hidden"><label for="fullName">الاسم الظاهر</label><input id="fullName" class="field" maxlength="80" placeholder="اكتب اسمك" autocomplete="name"></div><label for="email">البريد الإلكتروني</label><input id="email" class="field" type="email" placeholder="name@example.com" autocomplete="email"><label for="password">كلمة المرور</label><input id="password" class="field" type="password" minlength="6" placeholder="6 أحرف على الأقل" autocomplete="current-password"><div id="authMsg" class="notice" style="margin-top:12px">يمكن لأي شخص إنشاء حساب.</div><div class="modalbuttons"><button id="submitAuth" class="btn primary">تسجيل الدخول</button><button id="toggleAuthMode" class="btn secondary">إنشاء حساب جديد</button></div><button id="resetPassword" class="btn ghost" style="width:100%;margin-top:9px">نسيت كلمة المرور؟</button><button id="closeModal" class="btn ghost" style="width:100%;margin-top:9px">إغلاق</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 "use strict";
@@ -493,10 +509,22 @@ async function renderProfile(){
  else{$("profileContent").innerHTML=own.length?own.map(p=>`<article class="card post"><div class="posthead">${avatarHTML(profile)}<div><div class="name">${esc(profile.full_name)}</div><div class="time">${esc(time(p.created_at))}</div></div></div>${p.content?`<div class="posttext">${esc(p.content)}</div>`:""}${p.image_url?renderMedia(p.image_url):""}</article>`).join(""):'<div class="card empty">لم تنشر شيئًا بعد.</div>'}
 }
 document.querySelectorAll("[data-profile-tab]").forEach(b=>b.onclick=()=>{profileTab=b.dataset.profileTab;document.querySelectorAll("[data-profile-tab]").forEach(x=>x.classList.toggle("active",x===b));renderProfile()});
-function setAuthMode(mode){authMode=mode;$("modalTitle").textContent=mode==="signup"?"إنشاء حساب جديد":"الدخول إلى SH-CHAT";$("authIntro").textContent=mode==="signup"?"أنشئ حسابك بالبريد الإلكتروني. قد تحتاج إلى تأكيد بريدك.":"أدخل بريدك الإلكتروني وكلمة المرور."; $("nameField").classList.toggle("hidden",mode!=="signup");$("password").autocomplete=mode==="signup"?"new-password":"current-password";$("submitAuth").textContent=mode==="signup"?"إنشاء الحساب":"تسجيل الدخول";$("toggleAuthMode").textContent=mode==="signup"?"لدي حساب بالفعل":"إنشاء حساب جديد";authMessage(mode==="signup"?"التسجيل متاح للجميع.":"مرحبًا بعودتك إلى SH-CHAT.")}
-$("authButton").onclick=async()=>{if(currentUser){if(!confirm("هل تريد تسجيل الخروج؟"))return;await db.auth.signOut();currentUser=null;profile=null;myFriends=[];updateIdentity();showPage("home");await Promise.allSettled([loadFeed(),loadReels()]);notify("تم تسجيل الخروج.","success")}else{$("authModal").classList.add("show");setAuthMode("login")}};
+function authErrorArabic(error){
+ const msg=String(error?.message||error||"").toLowerCase();
+ if(/invalid login credentials|invalid_credentials/.test(msg))return "البريد الإلكتروني أو كلمة المرور غير صحيحة. تحقق منهما أو استخدم «نسيت كلمة المرور؟».";
+ if(/email not confirmed/.test(msg))return "لم يتم تأكيد البريد الإلكتروني بعد. افتح رسالة التأكيد في بريدك ثم حاول الدخول مجددًا.";
+ if(/user already registered|already registered/.test(msg))return "هذا البريد مسجل بالفعل. اختر «لدي حساب بالفعل» وسجّل الدخول.";
+ if(/password.*(weak|short)|weak password/.test(msg))return "كلمة المرور ضعيفة؛ استخدم 6 أحرف على الأقل، ويفضل أن تجمع بين الحروف والأرقام.";
+ if(/rate limit|too many requests/.test(msg))return "تمت محاولات كثيرة خلال وقت قصير. انتظر قليلًا ثم حاول مرة أخرى.";
+ if(/failed to fetch|network|fetch/.test(msg))return "تعذر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وحاول مجددًا.";
+ if(/redirect|url.*not allowed|not allowed.*url/.test(msg))return "إعداد رابط العودة في Supabase قد لا يسمح بعنوان الموقع الحالي. أضف رابط الموقع إلى Authentication → URL Configuration.";
+ return "تعذّر إكمال العملية: "+(error?.message||"خطأ غير معروف");
+}
+function setAuthMode(mode){authMode=mode;$("modalTitle").textContent=mode==="signup"?"إنشاء حساب جديد":"الدخول إلى SH-CHAT";$("authIntro").textContent=mode==="signup"?"أنشئ حسابك بالبريد الإلكتروني. قد تحتاج إلى تأكيد بريدك.":"أدخل بريدك الإلكتروني وكلمة المرور.";$("nameField").classList.toggle("hidden",mode!=="signup");$("password").autocomplete=mode==="signup"?"new-password":"current-password";$("submitAuth").textContent=mode==="signup"?"إنشاء الحساب":"تسجيل الدخول";$("toggleAuthMode").textContent=mode==="signup"?"لدي حساب بالفعل":"إنشاء حساب جديد";$("resetPassword").classList.toggle("hidden",mode!=="login");authMessage(mode==="signup"?"التسجيل متاح للجميع.":"مرحبًا بعودتك إلى SH-CHAT.")}
+$("authButton").onclick=async()=>{if(currentUser){if(!confirm("هل تريد تسجيل الخروج؟"))return;const {error}=await db.auth.signOut();if(error){notify(authErrorArabic(error),"error");return}currentUser=null;profile=null;myFriends=[];updateIdentity();showPage("home");await Promise.allSettled([loadFeed(),loadReels()]);notify("تم تسجيل الخروج.","success")}else{$("authModal").classList.add("show");setAuthMode("login")}};
 $("closeModal").onclick=()=>$("authModal").classList.remove("show");$("authModal").addEventListener("click",e=>{if(e.target===$("authModal"))$("authModal").classList.remove("show")});$("toggleAuthMode").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
-$("submitAuth").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value,fullName=$("fullName").value.trim();if(!email){authMessage("أدخل بريدك الإلكتروني.","error");return}if(password.length<6){authMessage("كلمة المرور يجب أن تكون 6 أحرف على الأقل.","error");return}if(authMode==="signup"&&!fullName){authMessage("اكتب الاسم الظاهر.","error");return}const b=$("submitAuth");b.disabled=true;try{if(authMode==="signup"){const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:fullName,username:email.split("@")[0]},emailRedirectTo:location.href}});if(error)throw error;if(data.session){currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await Promise.allSettled([loadFeed(),loadReels()]);notify("أهلًا بك في SH-CHAT!","success")}else{setAuthMode("login");authMessage("تم إنشاء الحساب. أكد بريدك الإلكتروني ثم سجّل الدخول.","success")}}else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error;await refreshAuth();$("authModal").classList.remove("show");await Promise.allSettled([loadFeed(),loadReels()]);notify("تم تسجيل الدخول. ستُحفظ جلستك على هذا المتصفح.","success")}}catch(e){authMessage("تعذّر إكمال العملية: "+(e.message||"خطأ غير معروف"),"error")}finally{b.disabled=false}};
+$("resetPassword").onclick=async()=>{const email=$("email").value.trim();if(!email){authMessage("أدخل بريدك الإلكتروني أولًا، ثم اضغط «نسيت كلمة المرور؟».","error");$("email").focus();return}const b=$("resetPassword");b.disabled=true;try{const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.href});if(error)throw error;authMessage("إذا كان البريد مسجلًا، فستصلك رسالة لإعادة تعيين كلمة المرور. تحقق من صندوق الوارد والبريد غير الهام.","success")}catch(e){authMessage(authErrorArabic(e),"error")}finally{b.disabled=false}};
+$("submitAuth").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value,fullName=$("fullName").value.trim();if(!email||!$("email").checkValidity()){authMessage("أدخل بريدًا إلكترونيًا صحيحًا.","error");return}if(password.length<6){authMessage("كلمة المرور يجب أن تكون 6 أحرف على الأقل.","error");return}if(authMode==="signup"&&!fullName){authMessage("اكتب الاسم الظاهر.","error");return}const b=$("submitAuth");b.disabled=true;try{if(authMode==="signup"){const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:fullName,username:email.split("@")[0]},emailRedirectTo:location.href}});if(error)throw error;if(data.session){currentUser=data.user;await refreshAuth();$("authModal").classList.remove("show");await Promise.allSettled([loadFeed(),loadReels()]);notify("أهلًا بك في SH-CHAT!","success")}else{setAuthMode("login");authMessage("تم إرسال طلب إنشاء الحساب. إذا كان تأكيد البريد مفعّلًا، افتح رسالة التأكيد أولًا ثم سجّل الدخول.","success")}}else{const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;if(!data.session)throw new Error("لم تُنشأ جلسة دخول. تحقق من تأكيد البريد الإلكتروني وإعدادات Supabase.");await refreshAuth();$("authModal").classList.remove("show");await Promise.allSettled([loadFeed(),loadReels()]);notify("تم تسجيل الدخول بنجاح. ستُحفظ جلستك على هذا المتصفح.","success")}}catch(e){authMessage(authErrorArabic(e),"error")}finally{b.disabled=false}};
 $("imageFile").onchange=e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")){notify("اختر ملف صورة فقط.","error");return}if(f.size>5*1024*1024){notify("حجم الصورة أكبر من 5 ميغابايت.","error");e.target.value="";return}pendingFile=f;$("videoUrl").value="";$("imageName").textContent=f.name};
 $("clearVideo").onclick=()=>{$("videoUrl").value="";notify("تم مسح رابط الفيديو.")};
 async function uploadImage(file,folder){if(!file)return null;if(!file.type.startsWith("image/")||file.size>5*1024*1024)throw Error("الصورة يجب أن تكون من نوع صورة وألا تتجاوز 5 ميغابايت.");const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"").slice(0,8)||"jpg";const path=`${currentUser.id}/${folder}/${crypto.randomUUID()}.${ext}`;const {error}=await db.storage.from("post-images").upload(path,file,{upsert:false,contentType:file.type});if(error)throw Error("تعذر رفع الصورة. تأكد من إعداد مساحة post-images في Supabase: "+error.message);return db.storage.from("post-images").getPublicUrl(path).data.publicUrl}
