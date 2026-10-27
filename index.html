@@ -363,7 +363,52 @@ header{background:rgba(7,15,30,.9);border-bottom:1px solid #25334c;box-shadow:0 
 @media(max-width:480px){.modal{padding:26px 20px;border-radius:24px}.modal h2{font-size:22px}.auth-brand-mark{width:68px;height:68px}}
 
 </style>
-</head>
+<style>
+
+/* SH-CHAT Premium polish pass: presentation-only, preserving existing functionality */
+:root{--bg:#07101f;--surface:#101b2e;--ink:#edf3ff;--muted:#9baac2;--line:#263650;--blue:#e2bd70;--blue2:#b98639;--navy:#07101f;--soft:#1b2b46;--shadow:0 18px 48px #0005}
+body{background:radial-gradient(ellipse at 50% -15%,#1d3557 0,transparent 48%),var(--bg);color:var(--ink)}
+header{background:rgba(7,16,31,.94);border-color:#263650;box-shadow:0 8px 28px #0003;backdrop-filter:blur(18px)}
+.brand{color:#f4f6fb}.logo{color:#111827;background:linear-gradient(135deg,#f4d990,#b98231);box-shadow:0 8px 22px #d6a64b35}
+.search{background:#111d32;border-color:#2b3b57;color:#f1f5ff}.search::placeholder{color:#91a0b8}
+.btn{border-radius:13px}.primary{color:#111827;background:linear-gradient(135deg,#f2d58d,#bd8738);box-shadow:0 6px 18px #d4a44b2b}.secondary{background:#1b2b46;color:#f1d58e}.ghost{background:#17253d;color:#d7e0ef}.danger{background:#3a1f2b;color:#ffb7c1}
+.side,.card{background:linear-gradient(155deg,#111e32,#0d1729);border-color:#263650;box-shadow:0 14px 36px #0002;border-radius:22px}
+.nav{color:#b7c3d6}.nav:hover,.nav.active{background:#1a2b47;color:#f1d58e}
+.hero{border:1px solid #33496b;border-radius:22px;background:radial-gradient(circle at 95% 0,#80602f 0,transparent 34%),linear-gradient(125deg,#0b172b,#152b4b);box-shadow:0 16px 35px #0003}
+.hero p{color:#c5d2e7}.hero-tag{background:#ffffff0d;border-color:#ffffff25}
+.notice{background:#152843;color:#d5e5ff;border:1px solid #2b456b}.notice.error{background:#351d2b;color:#ffc3c9}.notice.success{background:#17372f;color:#b4f1d6}
+.stories{scrollbar-width:thin}.story{border:1px solid #ffffff22;box-shadow:0 8px 22px #0002}
+.post,.composer,.right-card{background:#101b2e;border:1px solid #263650;border-radius:20px;box-shadow:0 10px 28px #0002}
+.compose-row textarea,.commentform input,.field{background:#0c1728;border-color:#2b3b57;color:#edf3ff}.compose-row textarea::placeholder,.field::placeholder,.commentform input::placeholder{color:#91a0b8}
+.postimg{background:#07101f}.actions{border-color:#293b57}.action{background:#18263d;color:#c6d2e4}.action.liked{background:#472238;color:#ffb9cc}.comment{background:#17263d;color:#e4ebf7}
+.profile-card{border-color:#263650}.cover{background:linear-gradient(125deg,#081426,#243d5d 65%,#b58a45)}.profile-avatar{border-color:#101b2e}.profile-stats span{background:#17253d;border-color:#2c3d59;color:#c2cee1}
+.tab{background:#182640;color:#aebbd0}.tab.active{background:linear-gradient(135deg,#f1d594,#b98435);color:#101827}
+.chat-layout{border-color:#2a3a55;background:#0a1322}.chat-list,.chat-head,.chat-compose{background:#101a2d;border-color:#2a3a55}.chat-item{color:#d5deec}.chat-item:hover,.chat-item.active{background:#1b2c49;color:#f0d28e}.messages{background:#0a1322}.bubble{background:#18253b;border-color:#2d3d57;color:#edf3ff}.bubble.mine{background:linear-gradient(135deg,#dcb66d,#a9782e);color:#101827;border-color:#dcb66d}.chat-compose input:not([type=file]){background:#0c1728;border-color:#30425f;color:#f1f5ff}.chat-compose .file-label{background:#1a2b46;color:#f1d58e;border:1px solid #354967}
+.modal{background:#101b2e;border:1px solid #2b3b57;color:#edf3ff}.modal .field{background:#0c1728;color:#edf3ff}.pill{background:#192a48;color:#f0d28e;border:1px solid #344a70}.friend-row{border-color:#293b57}
+.mobile-nav{background:rgba(8,15,28,.96);border-color:#25334c;backdrop-filter:blur(18px);box-shadow:0 -8px 30px #0004}.mobile-nav button{color:#9baac1}.mobile-nav button.active{color:#f0d28e;background:#1a2a45}.footer{color:#8292ad}
+/* Keep the composer visible while only the message history scrolls. */
+.chat-layout{min-height:390px;overflow:hidden}.chat-window{display:flex;flex-direction:column;min-height:0;overflow:hidden}.messages{min-height:0;flex:1 1 0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3c4f6d transparent}.chat-compose{position:relative;z-index:4;flex:0 0 auto;min-height:62px;display:flex;align-items:center}.chat-compose input:not([type=file]){min-width:0;flex:1 1 auto}.chat-media{max-width:min(360px,100%);object-fit:contain}
+@media(max-width:760px){.layout{padding:0 10px}.chat-layout{grid-template-columns:78px minmax(0,1fr);height:62vh;height:min(62vh,620px);min-height:390px}.chat-window{height:100%;min-height:0}.messages{min-height:0;flex:1 1 0}.chat-compose{flex-shrink:0;position:relative;bottom:auto;background:#101a2d;padding:8px 6px calc(8px + env(safe-area-inset-bottom));gap:5px}.chat-compose .file-label{font-size:11px;padding:8px 6px}.chat-compose input:not([type=file]){width:0;flex:1 1 auto;min-width:0;font-size:12px;padding:10px}.chat-compose .btn{flex:0 0 auto;font-size:12px;padding:9px 8px}.chat-list{padding:5px}.chat-item{padding:8px 3px;gap:5px;font-size:10px;overflow-wrap:anywhere}.chat-item .avatar{width:34px;height:34px}.chat-head{padding:11px;font-size:13px}.post,.composer,.right-card{border-radius:17px}}
+
+</style>
+<style>
+/* SH-CHAT mobile chat safeguard: keep composer and media button visible */
+.chat-window{display:flex;flex-direction:column;min-height:0;height:100%;overflow:hidden}
+.messages{min-height:0;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
+.chat-compose{display:flex;flex:0 0 auto;position:relative;z-index:5;gap:8px;align-items:center;padding:10px;background:var(--card,#fff);border-top:1px solid var(--line,#ddd)}
+.chat-compose input:not([type=file]){flex:1;min-width:0}
+.chat-compose .file-label{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.chat-compose input[type=file][hidden]{display:none!important}
+@media(max-width:680px){
+ .chat-layout{grid-template-columns:minmax(0,1fr);height:min(72vh,650px);min-height:420px}
+ .chat-list{max-height:125px;border-left:0;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;overflow-y:hidden}
+ .chat-item{min-width:130px;flex:0 0 auto}
+ .chat-window{min-height:0;height:100%}
+ .chat-compose{padding:8px;gap:6px}
+ .chat-compose .btn{padding:9px 10px}
+ .chat-compose input:not([type=file]){font-size:16px}
+}
+</style></head>
 <body>
 <header><div class="bar">
  <div class="brand"><div class="logo">SH</div><span>SH-CHAT</span></div>
