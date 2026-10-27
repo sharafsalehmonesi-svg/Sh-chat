@@ -908,8 +908,12 @@ $("shakeNearbyResults").addEventListener("click",async e=>{const b=e.target.clos
 function disableShake(){window.removeEventListener("devicemotion",handleShake);shakeEnabled=false;shakeStatus("ميزة الرجّ متوقفة.")}
 $("enableShake").onclick=enableShake;$("disableShake").onclick=disableShake;
 window.addEventListener("pagehide",()=>{if(nearbyWatchId!==null)navigator.geolocation?.clearWatch(nearbyWatchId)});
-// Restore the persisted Supabase session on every page load, including INITIAL_SESSION.
+// Restore the persisted Supabase session exactly once at startup.
+// Serialize auth events so startup restoration cannot race with login/logout events.
 let authBootstrapFinished=false;
+let authQueue=Promise.resolve();
+let lastAppliedSessionUserId=undefined;
+
 async function applyAuthSession(session){
  currentUser=session?.user||null;
  profile=currentUser?await ensureProfile(currentUser):null;
@@ -920,36 +924,48 @@ async function applyAuthSession(session){
  }else{
   profile=null;myFriends=[];notificationsCache=[];
   if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null}
-  updateNotificationBadge();
   if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}
+  updateNotificationBadge();
   updateIdentity();
  }
  await loadFeed();
 }
-db.auth.onAuthStateChange((event,session)=>{
- // Run outside the auth callback to avoid blocking Supabase's internal auth lock.
- setTimeout(async()=>{
-  try{
-   if(event==="INITIAL_SESSION"){
-    if(!authBootstrapFinished){
-     await applyAuthSession(session);
-     authBootstrapFinished=true;
-     await Promise.allSettled([loadReels()]);
-     if(!currentUser){setAuthMode("login");notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.");}
-    }
-    return;
-   }
+
+function queueAuthSession(event,session){
+ authQueue=authQueue.then(async()=>{
+  if(event==="INITIAL_SESSION"){
+   if(authBootstrapFinished)return;
    await applyAuthSession(session);
-  }catch(e){console.error("Auth session restore:",e);notify("تعذّر استعادة الجلسة: "+(e?.message||"خطأ غير معروف"),"error")}
- },0);
+   authBootstrapFinished=true;
+   await Promise.allSettled([loadReels()]);
+   if(!currentUser){
+    setAuthMode("login");
+    notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.");
+   }else{
+    notify("مرحبًا بعودتك! تم تحميل جلسة حسابك المحفوظة.","success");
+   }
+   lastAppliedSessionUserId=currentUser?.id||null;
+   return;
+  }
+  if(!authBootstrapFinished)return;
+  const nextId=session?.user?.id||null;
+  if(nextId===lastAppliedSessionUserId){
+   currentUser=session?.user||null;
+   updateIdentity();
+   return;
+  }
+  await applyAuthSession(session);
+  lastAppliedSessionUserId=nextId;
+ }).catch(e=>{
+  console.error("Auth session restore:",e);
+  notify("تعذّر استعادة الجلسة: "+(e?.message||"خطأ غير معروف"),"error");
+ });
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+ // Never await Supabase calls inside its auth callback.
+ setTimeout(()=>queueAuthSession(event,session),0);
 });
-(async()=>{try{
- const {data,error}=await db.auth.getSession();
- if(error)throw error;
- // The auth event is the primary bootstrap; this is a fallback if it has not fired yet.
- if(!authBootstrapFinished){await applyAuthSession(data.session);authBootstrapFinished=true;await Promise.allSettled([loadReels()]);}
- if(currentUser)notify("مرحبًا بعودتك! تم تحميل جلسة حسابك المحفوظة.","success");
-}catch(e){console.error("Initial session:",e);notify("تعذّر الاتصال أو استعادة الجلسة: "+(e?.message||"تحقق من اتصال الإنترنت"),"error")}})();
 </script>
 
 <style>
