@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#081426">
+<meta name="theme-color" content="#ffffff">
 <title>SH-CHAT | تواصل بلا حدود</title>
 <style>
 :root{--bg:#f4f7fc;--surface:#fff;--ink:#17243a;--muted:#728097;--line:#e3eaf4;--blue:#246bfe;--blue2:#1054d8;--navy:#081426;--soft:#eaf1ff;--green:#1a9b68;--red:#d9485f;--shadow:0 12px 35px #142d5010}
@@ -362,6 +362,42 @@ header{background:rgba(7,15,30,.9);border-bottom:1px solid #25334c;box-shadow:0 
 .modalbuttons{gap:10px}
 @media(max-width:480px){.modal{padding:26px 20px;border-radius:24px}.modal h2{font-size:22px}.auth-brand-mark{width:68px;height:68px}}
 
+
+/* Profile timeline actions inspired by familiar social feeds */
+.profile-tabs{position:sticky;top:68px;z-index:5;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}
+.post-menu-wrap{margin-right:auto;position:relative}
+.post-menu-trigger{width:34px;height:34px;border:0;border-radius:50%;background:var(--soft);color:var(--ink);font-size:22px;line-height:1}
+.post-menu{display:none;position:absolute;left:0;top:38px;z-index:8;min-width:145px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 35px #0003}
+.post-menu.open{display:block}.post-menu button{display:block;width:100%;text-align:right;border:0;background:transparent;padding:10px;border-radius:8px;color:var(--ink)}.post-menu button:hover{background:var(--soft)}
+.post-summary{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:12px;padding:8px 2px;border-bottom:1px solid var(--line);margin-top:10px}
+.profile-reel-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-reel{overflow:hidden;border:1px solid var(--line);border-radius:15px;background:var(--surface)}.profile-reel video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#050910}.profile-reel-info{padding:10px}.profile-reel-info .small{margin-top:5px}
+@media(max-width:760px){.profile-tabs{top:58px;gap:5px}.profile-tabs .tab{padding:9px 11px;font-size:12px}.profile-reel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* SH-CHAT white profile and feed polish */
+:root{--bg:#ffffff;--surface:#ffffff;--ink:#171717;--muted:#6b7280;--line:#e5e7eb;--soft:#eef5ff;--shadow:0 4px 18px rgba(15,23,42,.06)}
+body{background:#fff!important;color:#171717!important}
+.video-section{background:#fff!important;border:1px solid #e5e7eb!important;box-shadow:0 5px 20px rgba(15,23,42,.05)!important}
+.video-section h2,.video-section p{color:#172033!important}
+.reel-composer{background:#f8fafc!important;border-color:#e5e7eb!important}
+.reel-composer .field{background:#fff!important;color:#171717!important;border-color:#d9dee7!important}
+.post,.composer,.right-card,.side,.card{background:#fff!important;color:#171717!important}
+.profile-friends{margin:0 0 14px;padding:15px 16px;border-radius:18px;background:#fff!important;border:1px solid #e5e7eb;box-shadow:0 4px 18px rgba(15,23,42,.05)}
+.profile-friends-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.profile-friends-head h3{font-size:18px;margin:0;color:#171717}
+.link-btn{border:0;background:transparent;color:#1877f2;font-weight:800;padding:7px}
+.profile-friends-strip{display:flex;gap:12px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:thin}
+.profile-friend{flex:0 0 88px;display:flex;flex-direction:column;align-items:center;gap:7px;border:0;background:transparent;color:#202124;font-size:12px;font-weight:700;cursor:pointer;min-width:0}
+.profile-friend-avatar{width:68px;height:68px;border-radius:50%;overflow:hidden;display:block;border:2px solid #e8edf4;padding:2px}
+.profile-friend-avatar .avatar{width:100%;height:100%;border-radius:50%;font-size:12px}
+.profile-friend>span:last-child{max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-friends-empty{padding:8px 0}
+.profile-tabs{display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;background:#fff!important;border:0!important;border-bottom:1px solid #e5e7eb!important;border-radius:0!important;box-shadow:none!important;padding:7px 0!important}
+.profile-tabs .tab{flex:0 0 auto;border-radius:999px!important;background:#f3f4f6!important;color:#4b5563!important}
+.profile-tabs .tab.active{background:#e4f0ff!important;color:#0866ff!important;box-shadow:none!important}
+.compose-row textarea{background:#f7f8fa!important;border-color:#e5e7eb!important;color:#171717!important}
+.postimg{background:#f3f4f6!important;border-color:#e5e7eb!important}
+@media(max-width:760px){.profile-friends{padding:13px;border-radius:16px}.profile-friend{flex-basis:78px}.profile-friend-avatar{width:60px;height:60px}.profile-tabs{top:58px}.profile-tabs .tab{padding:9px 13px}}
+
 </style>
 <style>
 
@@ -408,7 +444,49 @@ header{background:rgba(7,16,31,.94);border-color:#263650;box-shadow:0 8px 28px #
  .chat-compose .btn{padding:9px 10px}
  .chat-compose input:not([type=file]){font-size:16px}
 }
-</style></head>
+</style><style>
+/* SH-CHAT WHITE THEME: clean white interface, preserving existing app behavior */
+:root{
+ --bg:#f5f7fb !important;--surface:#ffffff !important;--ink:#172033 !important;
+ --muted:#68758b !important;--line:#e2e7ef !important;--blue:#2463eb !important;
+ --blue2:#1749bd !important;--navy:#13213a !important;--soft:#edf3ff !important;
+ --green:#16845b !important;--red:#cf334f !important;--shadow:0 8px 28px rgba(18,35,65,.07) !important;
+}
+html,body{background:#f5f7fb !important;color:#172033 !important;color-scheme:light !important}
+body{background:#f5f7fb !important}
+header{background:rgba(255,255,255,.97) !important;border-color:#e2e7ef !important;box-shadow:0 4px 18px rgba(18,35,65,.06) !important}
+.brand{color:#13213a !important}
+.logo{background:linear-gradient(135deg,#f7dc98,#c2923f) !important;color:#172033 !important;box-shadow:0 5px 15px rgba(194,146,63,.2) !important}
+.search,.compose-row textarea,.commentform input,.field,.chat-compose input:not([type=file]){background:#fff !important;border-color:#dce3ee !important;color:#172033 !important}
+.search::placeholder,.compose-row textarea::placeholder,.field::placeholder,.chat-compose input::placeholder{color:#7a879a !important}
+.btn.primary,.primary{background:linear-gradient(135deg,#f6dda0,#d2a14d) !important;color:#172033 !important;box-shadow:0 5px 14px rgba(194,146,63,.18) !important}
+.secondary,.ghost{background:#eef2f8 !important;color:#34445f !important}
+.danger{background:#fff0f2 !important;color:#c92e4b !important}
+.side,.card,.post,.composer,.right-card{background:#fff !important;border-color:#e2e7ef !important;box-shadow:0 8px 28px rgba(18,35,65,.06) !important;color:#172033 !important}
+.nav{color:#4c5a70 !important}.nav:hover,.nav.active{background:#edf3ff !important;color:#245bd7 !important}
+.avatar{background:linear-gradient(135deg,#edf2fb,#dce6f7) !important;color:#2455bd !important}
+.small,.time,.footer{color:#748096 !important}
+.hero{background:linear-gradient(135deg,#ffffff,#edf3ff) !important;border:1px solid #e1e8f5 !important;box-shadow:0 8px 25px rgba(18,35,65,.06) !important;color:#172033 !important}
+.hero h1,.hero p{color:#172033 !important}.hero-tag{background:#fff !important;border-color:#dce5f4 !important;color:#3c5278 !important}
+.hero:after{color:rgba(36,99,235,.05) !important}
+.notice{background:#eef5ff !important;color:#244b86 !important;border-color:#dbe8ff !important}
+.notice.error{background:#fff0f2 !important;color:#9f2636 !important;border-color:#ffd8df !important}
+.notice.success{background:#effbf5 !important;color:#176544 !important;border-color:#cceedd !important}
+.stories{background:#fff !important}
+.posttext,.name,.profile-name,.profile-bio,.quick-stat,.modal,.modal label{color:#26354c !important}
+.postimg,.chat-media{background:#f2f5fa !important;border-color:#e1e7f0 !important}
+.actions{border-color:#e7ebf2 !important}.action{background:#f3f6fb !important;color:#4d5d75 !important;border-color:#e6ebf3 !important}.action.liked{background:#fff0f3 !important;color:#c72d52 !important}
+.comment{background:#f5f7fb !important;color:#26354c !important;border-color:#e5eaf2 !important}
+.profile-card{background:#fff !important;border-color:#e2e7ef !important}.cover{background:linear-gradient(125deg,#edf3ff,#d9e5fa 65%,#f6e7c2) !important}.profile-avatar{border-color:#fff !important}.profile-stats span{background:#f4f7fc !important;border-color:#e5ebf4 !important;color:#46546b !important}
+.tab{background:#eef2f8 !important;color:#53627a !important}.tab.active{background:linear-gradient(135deg,#f6dda0,#d2a14d) !important;color:#172033 !important;box-shadow:0 4px 12px rgba(194,146,63,.16) !important}
+.chat-layout{background:#fff !important;border-color:#e2e7ef !important}.chat-list,.chat-head,.chat-compose{background:#fff !important;border-color:#e2e7ef !important;color:#172033 !important}.chat-item{color:#34445f !important}.chat-item:hover,.chat-item.active{background:#edf3ff !important;color:#245bd7 !important}.messages{background:#f7f9fc !important}.bubble{background:#fff !important;border-color:#e2e7ef !important;color:#26354c !important}.bubble.mine{background:#e7efff !important;border-color:#d4e2ff !important;color:#173b85 !important}.chat-compose .file-label{background:#eef2f8 !important;color:#34445f !important;border-color:#dce3ee !important}
+.modal{background:#fff !important;border-color:#e2e7ef !important;color:#172033 !important}.modal .field{background:#fff !important;color:#172033 !important}.pill{background:#edf3ff !important;color:#255bd7 !important;border-color:#dfe9ff !important}.friend-row{border-color:#e2e7ef !important}
+.mobile-nav{background:rgba(255,255,255,.98) !important;border-color:#e2e7ef !important;box-shadow:0 -5px 20px rgba(18,35,65,.07) !important}.mobile-nav button{color:#6e7b91 !important}.mobile-nav button.active{color:#245bd7 !important;background:#edf3ff !important}
+.post-menu{background:#fff !important;border-color:#e2e7ef !important}.post-menu button{color:#172033 !important}.post-menu button:hover{background:#edf3ff !important}
+.notification-row.unread{background:#eef5ff !important}
+
+</style>
+</head>
 <body>
 <header><div class="bar">
  <div class="brand"><div class="logo">SH</div><span>SH-CHAT</span></div>
@@ -445,12 +523,12 @@ header{background:rgba(7,16,31,.94);border-color:#263650;box-shadow:0 8px 28px #
     <div id="reelsFeed" class="reels-feed"><div class="card empty">جارٍ تحميل الريلز…</div></div>
   </section>
    <section class="card stories" aria-label="مساحات المجتمع"><div class="story"><span class="storymark">SH</span><span>أهلًا بك في مجتمعنا</span></div><div class="story"><span class="storymark">＋</span><span>شارك أفكارك</span></div><div class="story"><span class="storymark">♡</span><span>تفاعل مع الأصدقاء</span></div><div class="story"><span class="storymark">✉</span><span>ابقَ على تواصل</span></div></section>
-   <section class="card composer"><div class="compose-row"><div class="avatar" id="myAvatar">؟</div><textarea id="postText" placeholder="ماذا تريد أن تشارك اليوم؟" maxlength="5000"></textarea></div><div class="video-link-row"><input id="videoUrl" type="url" placeholder="أضف رابط فيديو (YouTube / Vimeo / MP4) — اختياري" aria-label="رابط فيديو"><button type="button" id="clearVideo" class="btn ghost">مسح الرابط</button></div><div class="tools"><div><label class="btn ghost file-label" for="imageFile">＋ إضافة صورة</label><input id="imageFile" type="file" accept="image/*" hidden><span id="imageName" class="small">صورة حتى 5 ميغابايت، أو رابط فيديو</span></div><button id="publish" class="btn primary">نشر المنشور</button></div></section>
+   <section class="card composer"><div class="compose-row"><div class="avatar" id="myAvatar">؟</div><textarea id="postText" placeholder="بم تفكر؟ شارك منشورًا مع أصدقائك…" maxlength="5000"></textarea></div><div class="video-link-row"><input id="videoUrl" type="url" placeholder="أضف رابط فيديو (YouTube / Vimeo / MP4) — اختياري" aria-label="رابط فيديو"><button type="button" id="clearVideo" class="btn ghost">مسح الرابط</button></div><div class="tools"><div><label class="btn ghost file-label" for="imageFile">▧ صورة / فيديو</label><input id="imageFile" type="file" accept="image/*" hidden><span id="imageName" class="small">صورة حتى 5 ميغابايت، أو رابط فيديو</span></div><button id="publish" class="btn primary">نشر المنشور</button></div></section>
    <div id="feed"></div>
   </section>
   <section id="profilePage" class="hidden">
    <div id="profileView"></div>
-   <div class="tabs"><button class="tab active" data-profile-tab="posts">المنشورات</button><button class="tab" data-profile-tab="about">نبذة</button></div>
+   <div class="tabs profile-tabs"><button class="tab active" data-profile-tab="all">الكل</button><button class="tab" data-profile-tab="reels">ريلز</button><button class="tab" data-profile-tab="photos">الصور</button><button class="tab" data-profile-tab="posts">المنشورات</button><button class="tab" data-profile-tab="about">التفاصيل</button></div>
    <div id="profileContent"></div>
   </section>
   <section id="friendsPage" class="hidden"><section class="card right-card"><h2>الأصدقاء</h2><p class="small">ابحث عن أعضاء SH-CHAT وأرسل طلبات الصداقة.</p><div style="display:flex;gap:8px"><input class="field" id="userSearch" placeholder="اسم المستخدم"><button id="searchUsers" class="btn primary">بحث</button></div><div id="userResults" style="margin-top:12px"></div></section><section class="card right-card"><h3>طلبات الصداقة الواردة</h3><div id="incomingRequests" class="empty">سجّل الدخول لعرض الطلبات.</div></section><section class="card right-card"><h3>أصدقائي</h3><div id="friendsList" class="empty">سجّل الدخول لعرض الأصدقاء.</div></section></section>
@@ -601,7 +679,7 @@ function renderFeed(){
  if(!list.length){$("feed").innerHTML='<div class="card empty">لا توجد منشورات مطابقة بعد. كن أول من يشارك!</div>';return}
  $("feed").innerHTML=list.map(p=>{
   const likes=p.likeRows||[],comments=p.commentRows||[],liked=!!currentUser&&likes.some(l=>l.user_id===currentUser.id),open=commentsOpen.has(p.id);
-  return `<article class="card post" data-id="${p.id}"><div class="posthead">${avatarHTML(p.profile)}<div><button class="name" data-open-profile="${p.user_id}" style="border:0;background:transparent;padding:0;text-align:right">${esc(p.author)}</button><div class="time">${esc(time(p.created_at))}</div></div></div>${p.content?`<div class="posttext">${esc(p.content)}</div>`:""}${p.image_url?renderMedia(p.image_url):""}<div class="actions"><button class="action ${liked?"liked":""}" data-act="like">♥ ${likes.length} إعجاب</button><button class="action" data-act="comments">💬 التعليقات (${comments.length})</button>${currentUser&&p.user_id===currentUser.id?'<button class="action" data-act="delete">حذف</button>':'<button class="action" data-act="share">↗ مشاركة</button>'}</div><div class="comments ${open?"show":""}">${comments.map(c=>`<div class="comment"><b>${esc(c.user_id===currentUser?.id?"أنت":"عضو")}:</b> ${esc(c.content)}</div>`).join("")}<form class="commentform"><input name="comment" placeholder="${currentUser?"اكتب تعليقًا…":"سجّل الدخول للتعليق"}" maxlength="1000" required ${currentUser?"":"disabled"}><button class="btn primary" ${currentUser?"":"disabled"}>إرسال</button></form></div></article>`
+  return `<article class="card post" data-id="${p.id}"><div class="posthead">${avatarHTML(p.profile)}<div><button class="name" data-open-profile="${p.user_id}" style="border:0;background:transparent;padding:0;text-align:right">${esc(p.author)}</button><div class="time">${esc(time(p.created_at))}</div></div><div class="post-menu-wrap"><button class="post-menu-trigger" data-menu-toggle="${p.id}" aria-label="خيارات المنشور">⋯</button><div class="post-menu" data-post-menu="${p.id}">${currentUser&&p.user_id===currentUser.id?'<button data-act="delete">🗑 حذف المنشور</button>':''}<button data-act="share">↗ مشاركة المنشور</button></div></div></div>${p.content?`<div class="posttext">${esc(p.content)}</div>`:""}${p.image_url?renderMedia(p.image_url):""}<div class="post-summary"><span>👍 ${likes.length} إعجاب</span><span>${comments.length} تعليق</span></div><div class="actions"><button class="action ${liked?"liked":""}" data-act="like">${liked?"♥":"♡"} إعجاب</button><button class="action" data-act="comments">💬 تعليق</button><button class="action" data-act="share">↗ مشاركة</button></div><div class="comments ${open?"show":""}">${comments.map(c=>`<div class="comment"><b>${esc(c.user_id===currentUser?.id?"أنت":"عضو")}:</b> ${esc(c.content)}</div>`).join("")}<form class="commentform"><input name="comment" placeholder="${currentUser?"اكتب تعليقًا…":"سجّل الدخول للتعليق"}" maxlength="1000" required ${currentUser?"":"disabled"}><button class="btn primary" ${currentUser?"":"disabled"}>إرسال</button></form></div></article>`
  }).join("");
 }
 function showPage(page){
@@ -619,18 +697,35 @@ async function renderProfile(){
  let relationship="none";
  if(!isOwn&&currentUser){const {data}=await db.from("friendships").select("id,requester_id,addressee_id,status").or(`and(requester_id.eq.${currentUser.id},addressee_id.eq.${uid}),and(requester_id.eq.${uid},addressee_id.eq.${currentUser.id})`).limit(1).maybeSingle();if(data)relationship=data.status==="accepted"?"friend":data.requester_id===currentUser.id?"sent":"received"}
  const actionHTML=isOwn?'<button class="btn primary" id="editProfileBtn">تعديل الملف الشخصي</button>':`${relationship==="friend"?'<span class="pill">صديق</span>':relationship==="sent"?'<span class="pill">تم إرسال الطلب</span>':relationship==="received"?'<button class="btn primary" id="acceptProfileFriend">قبول طلب الصداقة</button>':'<button class="btn primary" id="addProfileFriend">＋ إضافة صديق</button>'}<button class="btn secondary" id="messageProfileUser">✉ مراسلة</button>`;
- $("profileView").innerHTML=`<section class="card profile-card"><div class="cover">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="الغلاف">`:""}</div><div class="profile-info"><div class="profile-top">${avatarHTML(p,"avatar profile-avatar")}<div style="padding-bottom:5px"><h2 class="profile-name">${esc(p.full_name||p.username||"عضو")}</h2><div class="small">@${esc(p.username||"member")}</div></div></div><p class="profile-bio">${esc(p.bio||"أهلًا بك في ملفي الشخصي على SH-CHAT.")}</p><div class="profile-stats"><span><b>${own.length}</b> منشور</span><span><b>${isOwn?myFriends.length:relationship==="friend"?"✓":"—"}</b> الأصدقاء</span></div><div class="profile-actions">${actionHTML}<button class="btn ghost" id="backFromProfile">رجوع</button></div></div></section>`;
+ const friendsPreview=isOwn?`<section class="card profile-friends"><div class="profile-friends-head"><h3>الأصدقاء</h3><button class="link-btn" id="viewAllProfileFriends">عرض الكل</button></div>${myFriends.length?`<div class="profile-friends-strip">${myFriends.slice(0,8).map(f=>`<button class="profile-friend" data-open-profile="${esc(f.id)}"><span class="profile-friend-avatar">${avatarHTML(f,"avatar")}</span><span>${esc(f.full_name||f.username||"عضو")}</span></button>`).join("")}</div>`:`<div class="small profile-friends-empty">لم تضف أصدقاء بعد. ابحث عن الأعضاء وأرسل طلبات الصداقة.</div>`}</section>`:"";
+ $("profileView").innerHTML=`<section class="card profile-card"><div class="cover">${p.cover_url?`<img src="${esc(p.cover_url)}" alt="الغلاف">`:""}</div><div class="profile-info"><div class="profile-top">${avatarHTML(p,"avatar profile-avatar")}<div style="padding-bottom:5px"><h2 class="profile-name">${esc(p.full_name||p.username||"عضو")}</h2><div class="small">@${esc(p.username||"member")}</div></div></div><p class="profile-bio">${esc(p.bio||"أهلًا بك في ملفي الشخصي على SH-CHAT.")}</p><div class="profile-stats"><span><b>${own.length}</b> منشور</span><span><b>${isOwn?myFriends.length:relationship==="friend"?"✓":"—"}</b> الأصدقاء</span></div><div class="profile-actions">${actionHTML}<button class="btn ghost" id="backFromProfile">رجوع</button></div></div></section>${friendsPreview}`;
+ $("viewAllProfileFriends")?.addEventListener("click",()=>showPage("friends"));
  $("editProfileBtn")?.addEventListener("click",()=>showPage("settings"));
  $("backFromProfile")?.addEventListener("click",()=>{viewedProfileId=null;viewedProfileData=null;showPage(isOwn?"home":"friends")});
  $("messageProfileUser")?.addEventListener("click",async()=>{if(!requireAuth())return;selectedFriend=uid;showPage("chat");await loadChatList();await openConversation(uid)});
  $("addProfileFriend")?.addEventListener("click",async()=>{if(!requireAuth())return;const {error}=await db.from("friendships").insert({requester_id:currentUser.id,addressee_id:uid,status:"pending"});if(error){notify("تعذّر إرسال طلب الصداقة: "+error.message,"error");return}notify("تم إرسال طلب الصداقة.","success");renderProfile()});
  $("acceptProfileFriend")?.addEventListener("click",async()=>{const {data}=await db.from("friendships").select("id").eq("requester_id",uid).eq("addressee_id",currentUser.id).eq("status","pending").maybeSingle();if(!data){notify("لم يعد طلب الصداقة متاحًا.","error");return}const {error}=await db.from("friendships").update({status:"accepted"}).eq("id",data.id);if(error){notify("تعذّر قبول الطلب: "+error.message,"error");return}await loadFriends();notify("تم قبول طلب الصداقة.","success");renderProfile()});
- if(profileTab==="about"){$("profileContent").innerHTML=`<section class="card right-card"><h3>نبذة عن ${esc(p.full_name||p.username||"العضو")}</h3><p>${esc(p.bio||"لم يضف المستخدم نبذة بعد.")}</p><p class="small">اسم المستخدم: @${esc(p.username||"member")}</p></section>`}
- else{$("profileContent").innerHTML=own.length?own.map(post=>`<article class="card post"><div class="posthead">${avatarHTML(p)}<div><div class="name">${esc(p.full_name||p.username||"عضو")}</div><div class="time">${esc(time(post.created_at))}</div></div></div>${post.content?`<div class="posttext">${esc(post.content)}</div>`:""}${post.image_url?renderMedia(post.image_url):""}</article>`).join(""):'<div class="card empty">لا توجد منشورات لهذا المستخدم بعد.</div>'}
+ if(profileTab==="about"){$("profileContent").innerHTML=`<section class="card right-card"><h3>نبذة عن ${esc(p.full_name||p.username||"العضو")}</h3><p>${esc(p.bio||"لم يضف المستخدم نبذة بعد.")}</p><p class="small">اسم المستخدم: @${esc(p.username||"member")}</p></section>`;return}
+ if(profileTab==="reels"){
+  const rs=cachedReels.filter(r=>r.user_id===uid);
+  $("profileContent").innerHTML=rs.length?`<div class="profile-reel-grid">${rs.map(r=>`<article class="profile-reel" data-profile-reel="${esc(r.id)}"><video src="${esc(r.video_url)}" controls playsinline preload="metadata"></video><div class="profile-reel-info"><b>${esc(r.caption||"Reels")}</b><div class="small">♥ ${(r.likeRows||[]).length} · 💬 ${(r.commentRows||[]).length}</div>${currentUser?.id===r.user_id?`<button class="btn danger" data-profile-reel-delete="${esc(r.id)}" style="margin-top:8px;width:100%">حذف الريلز</button>`:""}</div></article>`).join("")}</div>`:'<div class="card empty">لا توجد Reels لهذا المستخدم بعد.</div>';return;
+ }
+ const mediaPosts=own.filter(post=>{const u=String(post.image_url||"").toLowerCase();const video=/\.(mp4|webm|ogg)(\?.*)?$/.test(u)||/youtu\.be|youtube\.com|vimeo\.com/.test(u);return !!post.image_url&&!video});
+ const shown=profileTab==="photos"?mediaPosts:own;
+ $("profileContent").innerHTML=shown.length?shown.map(post=>{const likes=post.likeRows||[],comments=post.commentRows||[],liked=!!currentUser&&likes.some(l=>l.user_id===currentUser.id),open=commentsOpen.has(post.id),canDelete=currentUser?.id===post.user_id;return `<article class="card post" data-id="${post.id}"><div class="posthead">${avatarHTML(p)}<div><div class="name">${esc(p.full_name||p.username||"عضو")}</div><div class="time">${esc(time(post.created_at))}</div></div><div class="post-menu-wrap"><button class="post-menu-trigger" data-menu-toggle="${post.id}" aria-label="خيارات المنشور">⋯</button><div class="post-menu" data-post-menu="${post.id}">${canDelete?`<button data-act="delete">🗑 حذف المنشور</button>`:""}<button data-act="share">↗ مشاركة المنشور</button></div></div></div>${post.content?`<div class="posttext">${esc(post.content)}</div>`:""}${post.image_url?renderMedia(post.image_url):""}<div class="post-summary"><span>👍 ${likes.length} إعجاب</span><span>${comments.length} تعليق</span></div><div class="actions"><button class="action ${liked?"liked":""}" data-act="like">${liked?"♥":"♡"} إعجاب</button><button class="action" data-act="comments">💬 تعليق</button><button class="action" data-act="share">↗ مشاركة</button></div><div class="comments ${open?"show":""}">${comments.map(c=>`<div class="comment"><b>${esc(c.user_id===currentUser?.id?"أنت":"عضو")}:</b> ${esc(c.content)}</div>`).join("")}<form class="commentform"><input name="comment" placeholder="${currentUser?"اكتب تعليقًا…":"سجّل الدخول للتعليق"}" maxlength="1000" required ${currentUser?"":"disabled"}><button class="btn primary" ${currentUser?"":"disabled"}>إرسال</button></form></div></article>`}).join(""):'<div class="card empty">لا توجد منشورات في هذا القسم بعد.</div>';
 }
 async function openMemberProfile(id){if(!id)return;if(!currentUser){notify("سجّل الدخول لزيارة ملفات الأعضاء.","error");return}if(id===currentUser.id){viewedProfileId=null;viewedProfileData=null;showPage("profile");return}const {data,error}=await db.from("profiles").select("id,username,full_name,bio,avatar_url,cover_url").eq("id",id).maybeSingle();if(error||!data){notify("تعذّر فتح الملف الشخصي. تحقق من صلاحيات قراءة الملفات في Supabase.","error");return}viewedProfileId=id;viewedProfileData=data;showPage("profile");await renderProfile()}
 
 document.querySelectorAll("[data-profile-tab]").forEach(b=>b.onclick=()=>{profileTab=b.dataset.profileTab;document.querySelectorAll("[data-profile-tab]").forEach(x=>x.classList.toggle("active",x===b));renderProfile()});
+$("profileContent").addEventListener("click",async e=>{
+ const menu=e.target.closest("[data-menu-toggle]");if(menu){const id=menu.dataset.menuToggle,box=$(`[data-post-menu="${id}"]`);document.querySelectorAll(".post-menu.open").forEach(x=>{if(x!==box)x.classList.remove("open")});box?.classList.toggle("open");return}
+ const delReel=e.target.closest("[data-profile-reel-delete]");if(delReel){if(!requireAuth())return;const id=delReel.dataset.profileReelDelete;if(!confirm("هل تريد حذف هذا الريلز؟"))return;delReel.disabled=true;try{const {error}=await db.from("reels").delete().eq("id",id).eq("user_id",currentUser.id);if(error)throw error;await loadReels();await renderProfile();notify("تم حذف الريلز.","success")}catch(err){notify("تعذّر حذف الريلز: "+err.message,"error")}finally{delReel.disabled=false}return}
+ const b=e.target.closest("button[data-act]");if(!b)return;const art=b.closest(".post"),id=Number(art?.dataset.id),post=cachedPosts.find(x=>x.id===id);if(!post)return;const act=b.dataset.act;
+ if(act==="comments"){commentsOpen.has(id)?commentsOpen.delete(id):commentsOpen.add(id);renderProfile();return}
+ if(act==="share"){const shareText=`${post.author} على SH-CHAT:\n${post.content||""}\n${post.image_url||""}`;if(navigator.share)navigator.share({title:"SH-CHAT",text:shareText}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(shareText).then(()=>notify("تم نسخ المنشور للمشاركة.","success"));return}
+ if(!requireAuth())return;b.disabled=true;try{if(act==="like"){const mine=(post.likeRows||[]).some(l=>l.user_id===currentUser.id);const res=mine?await db.from("likes").delete().eq("post_id",id).eq("user_id",currentUser.id):await db.from("likes").insert({post_id:id,user_id:currentUser.id});if(res.error)throw res.error;await loadFeed();await renderProfile()}else if(act==="delete"){if(post.user_id!==currentUser.id){notify("يمكنك حذف منشوراتك فقط.","error");return}if(!confirm("حذف هذا المنشور نهائيًا؟"))return;const {error}=await db.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);if(error)throw error;await loadFeed();await renderProfile();notify("تم حذف المنشور.","success")}}catch(err){notify("تعذّر تنفيذ العملية: "+err.message,"error")}finally{b.disabled=false}
+});
+$("profileContent").addEventListener("submit",async e=>{if(!e.target.matches(".commentform"))return;e.preventDefault();if(!requireAuth())return;const art=e.target.closest(".post"),id=Number(art.dataset.id),content=e.target.elements.comment.value.trim();if(!content)return;const btn=e.target.querySelector("button");btn.disabled=true;try{const {error}=await db.from("comments").insert({post_id:id,user_id:currentUser.id,content});if(error)throw error;commentsOpen.add(id);await loadFeed();await renderProfile()}catch(err){notify("تعذّر التعليق: "+err.message,"error")}finally{btn.disabled=false}});
 function authErrorArabic(error){
  const msg=String(error?.message||error||"").toLowerCase();
  if(/invalid login credentials|invalid_credentials/.test(msg))return "اسم المستخدم أو كلمة المرور غير صحيحة.";
@@ -693,7 +788,7 @@ $("imageFile").onchange=e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.
 $("clearVideo").onclick=()=>{$("videoUrl").value="";notify("تم مسح رابط الفيديو.")};
 async function uploadImage(file,folder){if(!file)return null;if(!file.type.startsWith("image/")||file.size>5*1024*1024)throw Error("الصورة يجب أن تكون من نوع صورة وألا تتجاوز 5 ميغابايت.");const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"").slice(0,8)||"jpg";const path=`${currentUser.id}/${folder}/${crypto.randomUUID()}.${ext}`;const {error}=await db.storage.from("post-images").upload(path,file,{upsert:false,contentType:file.type});if(error)throw Error("تعذر رفع الصورة. تأكد من إعداد مساحة post-images في Supabase: "+error.message);return db.storage.from("post-images").getPublicUrl(path).data.publicUrl}
 $("publish").onclick=async()=>{if(!requireAuth())return;const content=$("postText").value.trim(),videoUrl=$("videoUrl").value.trim();if(videoUrl&&!validVideoUrl(videoUrl)){notify("أدخل رابط فيديو صالحًا من YouTube أو Vimeo أو رابط MP4 مباشر.","error");return}if(videoUrl&&pendingFile){notify("اختر صورة أو رابط فيديو، وليس الاثنين معًا.","error");return}if(!content&&!pendingFile&&!videoUrl){notify("اكتب نصًا أو اختر صورة أو أضف رابط فيديو أولًا.","error");return}const b=$("publish");b.disabled=true;try{const image_url=videoUrl||await uploadImage(pendingFile,"posts");const {error}=await db.from("posts").insert({user_id:currentUser.id,content:content||null,image_url});if(error)throw error;$("postText").value="";$("videoUrl").value="";$("imageFile").value="";$("imageName").textContent="صورة حتى 5 ميغابايت، أو رابط فيديو";pendingFile=null;await loadFeed();notify("تم نشر منشورك.","success")}catch(e){notify("تعذّر النشر: "+e.message,"error")}finally{b.disabled=false}};
-$("feed").addEventListener("click",async e=>{const b=e.target.closest("button[data-act]");if(!b)return;const art=b.closest(".post"),id=Number(art.dataset.id),p=cachedPosts.find(x=>x.id===id);if(!p)return;const act=b.dataset.act;if(act==="comments"){commentsOpen.has(id)?commentsOpen.delete(id):commentsOpen.add(id);renderFeed();return}if(act==="share"){const text=`${p.author} على SH-CHAT:\n${p.content||""}\n${p.image_url||""}`;if(navigator.share)navigator.share({title:"SH-CHAT",text}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>notify("تم نسخ المنشور للمشاركة.","success"));return}if(!requireAuth())return;b.disabled=true;try{if(act==="like"){const mine=p.likeRows.some(l=>l.user_id===currentUser.id);const res=mine?await db.from("likes").delete().eq("post_id",id).eq("user_id",currentUser.id):await db.from("likes").insert({post_id:id,user_id:currentUser.id});if(res.error)throw res.error;await loadFeed()}else if(act==="delete"){if(!confirm("حذف هذا المنشور؟"))return;const {error}=await db.from("posts").delete().eq("id",id);if(error)throw error;await loadFeed()}}catch(err){notify("تعذّر تنفيذ العملية: "+err.message,"error")}finally{b.disabled=false}});
+$("feed").addEventListener("click",async e=>{const mt=e.target.closest("[data-menu-toggle]");if(mt){const id=mt.dataset.menuToggle,box=$(`[data-post-menu="${id}"]`);document.querySelectorAll(".post-menu.open").forEach(x=>{if(x!==box)x.classList.remove("open")});box?.classList.toggle("open");return}const b=e.target.closest("button[data-act]");if(!b)return;const art=b.closest(".post"),id=Number(art.dataset.id),p=cachedPosts.find(x=>x.id===id);if(!p)return;const act=b.dataset.act;if(act==="comments"){commentsOpen.has(id)?commentsOpen.delete(id):commentsOpen.add(id);renderFeed();return}if(act==="share"){const text=`${p.author} على SH-CHAT:\n${p.content||""}\n${p.image_url||""}`;if(navigator.share)navigator.share({title:"SH-CHAT",text}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>notify("تم نسخ المنشور للمشاركة.","success"));return}if(!requireAuth())return;b.disabled=true;try{if(act==="like"){const mine=p.likeRows.some(l=>l.user_id===currentUser.id);const res=mine?await db.from("likes").delete().eq("post_id",id).eq("user_id",currentUser.id):await db.from("likes").insert({post_id:id,user_id:currentUser.id});if(res.error)throw res.error;await loadFeed()}else if(act==="delete"){if(!confirm("حذف هذا المنشور؟"))return;if(p.user_id!==currentUser.id){notify("يمكنك حذف منشوراتك فقط.","error");return}const {error}=await db.from("posts").delete().eq("id",id).eq("user_id",currentUser.id);if(error)throw error;await loadFeed()}}catch(err){notify("تعذّر تنفيذ العملية: "+err.message,"error")}finally{b.disabled=false}});
 $("feed").addEventListener("submit",async e=>{if(!e.target.matches(".commentform"))return;e.preventDefault();if(!requireAuth())return;const art=e.target.closest(".post"),id=Number(art.dataset.id),input=e.target.elements.comment,content=input.value.trim();if(!content)return;const b=e.target.querySelector("button");b.disabled=true;const {error}=await db.from("comments").insert({post_id:id,user_id:currentUser.id,content});b.disabled=false;if(error){notify("تعذّر التعليق: "+error.message,"error");return}commentsOpen.add(id);await loadFeed()});
 $("search").oninput=renderFeed;
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-open-profile]");if(!b||b.closest("#friendsList,#userResults"))return;await openMemberProfile(b.dataset.openProfile)});
