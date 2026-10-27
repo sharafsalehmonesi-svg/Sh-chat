@@ -837,7 +837,7 @@ function drawProfileCrop(){
 // Let the user drag the image itself to select the exact crop, including on mobile.
 let cropDrag=null;
 $("profileCropCanvas").addEventListener("pointerdown",e=>{if(!cropSession)return;cropDrag={x:e.clientX,y:e.clientY,cx:Number($("cropX").value),cy:Number($("cropY").value)};e.currentTarget.setPointerCapture?.(e.pointerId);e.currentTarget.style.cursor="grabbing";e.preventDefault()});
-$("profileCropCanvas").addEventListener("pointermove",e=>{if(!cropDrag||!cropSession)return;const canvas=$("profileCropCanvas"),rect=canvas.getBoundingClientRect(),{img,kind}=cropSession;const ratio=kind==="avatar"?1:8/3;let baseW=img.naturalWidth,baseH=img.naturalHeight;if(baseW/baseH>ratio)baseW=baseH*ratio;else baseH=baseW/ratio;const z=Number($("cropZoom").value||1),sw=baseW/z,sh=baseH/z;const moveX=img.naturalWidth-sw,moveY=img.naturalHeight-sh;const dx=(e.clientX-cropDrag.x)*sw/Math.max(1,rect.width),dy=(e.clientY-cropDrag.y)*sh/Math.max(1,rect.height);$("cropX").value=String(moveX>0?Math.max(0,Math.min(100,cropDrag.cx-dx/moveX*100)):50);$("cropY").value=String(moveY>0?Math.max(0,Math.min(100,cropDrag.cy-dy/moveY*100)):50);drawProfileCrop()});
+$("profileCropCanvas").addEventListener("pointermove",e=>{if(!cropDrag||!cropSession)return;const canvas=$("profileCropCanvas"),rect=canvas.getBoundingClientRect();const dx=(e.clientX-cropDrag.x)/Math.max(1,rect.width)*100,dy=(e.clientY-cropDrag.y)/Math.max(1,rect.height)*100;const z=Number($("cropZoom").value||1);$("cropX").value=String(Math.max(0,Math.min(100,cropDrag.cx-dx/Math.max(.15,z))));$("cropY").value=String(Math.max(0,Math.min(100,cropDrag.cy-dy/Math.max(.15,z))));drawProfileCrop()});
 function stopCropDrag(){cropDrag=null;$("profileCropCanvas").style.cursor="grab"}
 $("profileCropCanvas").addEventListener("pointerup",stopCropDrag);$("profileCropCanvas").addEventListener("pointercancel",stopCropDrag);$("profileCropCanvas").addEventListener("lostpointercapture",stopCropDrag);
 for(const id of ["cropZoom","cropX","cropY"])$(id).addEventListener("input",drawProfileCrop);
@@ -908,62 +908,57 @@ $("shakeNearbyResults").addEventListener("click",async e=>{const b=e.target.clos
 function disableShake(){window.removeEventListener("devicemotion",handleShake);shakeEnabled=false;shakeStatus("ميزة الرجّ متوقفة.")}
 $("enableShake").onclick=enableShake;$("disableShake").onclick=disableShake;
 window.addEventListener("pagehide",()=>{if(nearbyWatchId!==null)navigator.geolocation?.clearWatch(nearbyWatchId)});
-db.auth.onAuthStateChange((event,session)=>{if(event==="INITIAL_SESSION")return;setTimeout(async()=>{currentUser=session?.user||null;profile=currentUser?await ensureProfile(currentUser):null;updateIdentity();if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()])}else{profile=null;myFriends=[];notificationsCache=[];if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null}updateNotificationBadge();if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}}await loadFeed()},0)});
-(async()=>{try{await refreshAuth();await Promise.allSettled([loadFeed(),loadReels()]);if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);notify("مرحبًا بعودتك! تم تحميل جلسة حسابك المحفوظة.","success")}else{setAuthMode("login");notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.")}}catch(e){notify("تعذّر الاتصال: "+e.message,"error")}})();
+// Restore the persisted Supabase session on every page load, including INITIAL_SESSION.
+let authBootstrapFinished=false;
+async function applyAuthSession(session){
+ currentUser=session?.user||null;
+ profile=currentUser?await ensureProfile(currentUser):null;
+ updateIdentity();
+ if(currentUser){
+  await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);
+  if(authBootstrapFinished)notify("تم استعادة جلسة حسابك.","success");
+ }else{
+  profile=null;myFriends=[];notificationsCache=[];
+  if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null}
+  updateNotificationBadge();
+  if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}
+  updateIdentity();
+ }
+ await loadFeed();
+}
+db.auth.onAuthStateChange((event,session)=>{
+ // Run outside the auth callback to avoid blocking Supabase's internal auth lock.
+ setTimeout(async()=>{
+  try{
+   if(event==="INITIAL_SESSION"){
+    if(!authBootstrapFinished){
+     await applyAuthSession(session);
+     authBootstrapFinished=true;
+     await Promise.allSettled([loadReels()]);
+     if(!currentUser){setAuthMode("login");notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.");}
+    }
+    return;
+   }
+   await applyAuthSession(session);
+  }catch(e){console.error("Auth session restore:",e);notify("تعذّر استعادة الجلسة: "+(e?.message||"خطأ غير معروف"),"error")}
+ },0);
+});
+(async()=>{try{
+ const {data,error}=await db.auth.getSession();
+ if(error)throw error;
+ // The auth event is the primary bootstrap; this is a fallback if it has not fired yet.
+ if(!authBootstrapFinished){await applyAuthSession(data.session);authBootstrapFinished=true;await Promise.allSettled([loadReels()]);}
+ if(currentUser)notify("مرحبًا بعودتك! تم تحميل جلسة حسابك المحفوظة.","success");
+}catch(e){console.error("Initial session:",e);notify("تعذّر الاتصال أو استعادة الجلسة: "+(e?.message||"تحقق من اتصال الإنترنت"),"error")}})();
 </script>
 
 <style>
 #profileCropModal{display:none;position:fixed;inset:0;z-index:100000;background:#050b16dd;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px)}
 #profileCropModal.show{display:flex}#profileCropModal .crop-panel{width:min(460px,100%);max-height:92vh;overflow:auto;background:#101a2d;color:#f3f6ff;border:1px solid #3b4c68;border-radius:22px;padding:18px;box-shadow:0 25px 80px #0008}
 #profileCropModal .crop-preview{display:flex;justify-content:center;align-items:center;min-height:190px;background:#080e19;border:1px solid #2b3b55;border-radius:15px;padding:12px;margin:12px 0;overflow:hidden}
-#profileCropCanvas{display:block;max-width:100%;max-height:48vh;object-fit:contain;border-radius:8px;background:#080e19;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 0 0 2px #d6b36c30;cursor:grab}#profileCropCanvas:active{cursor:grabbing}
+#profileCropCanvas{display:block;max-width:100%;max-height:48vh;object-fit:contain;border-radius:8px;background:#080e19}
 #profileCropModal label{display:block;margin:12px 0 5px;font-size:13px;font-weight:800}#profileCropModal input[type=range]{width:100%;accent-color:#d6b36c}
 #profileCropModal .crop-actions{display:flex;gap:8px;margin-top:15px}#profileCropModal .crop-actions button{flex:1}
-
-/* KATING / SH-CHAT final white theme override */
-:root{
- --bg:#f7f8fa;--surface:#fff;--ink:#171717;--muted:#6b7280;--line:#e5e7eb;
- --blue:#1877f2;--blue2:#0866ff;--navy:#172033;--soft:#eef5ff;
- --shadow:0 4px 18px rgba(15,23,42,.06)
-}
-body{background:#f7f8fa!important;color:#171717!important}
-header{background:rgba(255,255,255,.96)!important;border-color:#e5e7eb!important;box-shadow:0 4px 18px rgba(15,23,42,.05)!important}
-.brand,.name,.posttext,.hero h1{color:#171717}
-.logo{background:linear-gradient(135deg,#1877f2,#0755c9)!important;color:#fff!important;box-shadow:0 6px 16px #1877f230!important}
-.search,.compose-row textarea,.commentform input,.field,.chat-compose input:not([type=file]){
- background:#fff!important;color:#171717!important;border-color:#e5e7eb!important
-}
-.search::placeholder,.compose-row textarea::placeholder,.field::placeholder,.chat-compose input::placeholder{color:#6b7280!important}
-.btn.primary,.modal .primary{background:linear-gradient(135deg,#2684ff,#0866ff)!important;color:#fff!important}
-.secondary,.ghost{background:#eef5ff!important;color:#0866ff!important}
-.danger{background:#fff0f2!important;color:#c62d4d!important}
-.side,.card,.post,.composer,.right-card,.profile-friends,.video-section{
- background:#fff!important;color:#171717!important;border-color:#e5e7eb!important;box-shadow:0 4px 18px rgba(15,23,42,.06)!important
-}
-.nav{color:#4b5563}.nav:hover,.nav.active{background:#eef5ff!important;color:#0866ff!important;box-shadow:none!important}
-.hero{background:linear-gradient(125deg,#eaf3ff,#fff)!important;border:1px solid #dbeafe!important;box-shadow:0 6px 20px #0f172a0a!important}
-.hero h1{color:#10264a!important}.hero p{color:#4b5c74!important}.hero-tag{background:#fff!important;color:#1756b5!important;border-color:#dbeafe!important}
-.notice{background:#eff6ff!important;color:#1e40af!important;border-color:#dbeafe!important}
-.notice.error{background:#fff1f2!important;color:#9f1239!important;border-color:#fecdd3!important}
-.notice.success{background:#ecfdf5!important;color:#166534!important;border-color:#bbf7d0!important}
-.stories{background:#fff!important;border:1px solid #e5e7eb!important}
-.story{color:#fff!important}
-.postimg{background:#f3f4f6!important;border-color:#e5e7eb!important;object-fit:cover!important}
-.action{background:#f3f4f6!important;color:#4b5563!important}.action:hover,.action.liked{background:#eef5ff!important;color:#0866ff!important}
-.comment{background:#f8fafc!important;color:#1f2937!important;border-color:#e5e7eb!important}
-.post-menu{background:#fff!important;border-color:#e5e7eb!important}.post-menu button{color:#171717!important}.post-menu button:hover{background:#eef5ff!important}
-.profile-tabs{background:#fff!important;border-color:#e5e7eb!important}.profile-tabs .tab{background:#f3f4f6!important;color:#4b5563!important}.profile-tabs .tab.active{background:#e4f0ff!important;color:#0866ff!important}
-.profile-stats span{background:#f8fafc!important;color:#4b5563!important;border-color:#e5e7eb!important}
-.chat-layout,.chat-list,.chat-head,.chat-compose{background:#fff!important;border-color:#e5e7eb!important}
-.messages{background:#f8fafc!important}.bubble{background:#fff!important;color:#171717!important;border-color:#e5e7eb!important}.bubble.mine{background:#1877f2!important;color:#fff!important;border-color:#1877f2!important}
-.video-section h2,.video-section p{color:#172033!important}.reel-composer{background:#f8fafc!important;border-color:#e5e7eb!important}.reel-composer .field{background:#fff!important;color:#171717!important;border-color:#d1d5db!important}
-.reel-card{background:#050910!important}.reel-card.is-fullscreen{background:#000!important}.reel-fullscreen-btn{background:#000b!important;color:#fff!important}
-.reel-action{background:#0009!important;color:#fff!important}.reel-comments{background:#fff!important;color:#171717!important;border-top:1px solid #e5e7eb}.reel-comment-form input{background:#f8fafc!important;color:#171717!important;border:1px solid #d1d5db!important}
-.shake-stage{background:radial-gradient(circle at 50% 28%,#e5edff 0,transparent 42%),#fff!important}
-.modal{background:#fff!important;color:#171717!important;border-color:#e5e7eb!important}.modal:before{border-color:#e5e7eb!important}.modal h2{color:#172033!important}.modal label{color:#34425a!important}.modal .small{color:#6b7280!important}.auth-brand-mark{background:linear-gradient(135deg,#2684ff,#0866ff)!important;color:#fff!important;border:0!important}.auth-tagline{color:#0866ff!important}.modal .field{background:#fff!important;color:#171717!important;border-color:#d1d5db!important}
-.mobile-nav{background:rgba(255,255,255,.97)!important;border-color:#e5e7eb!important}.mobile-nav button{color:#6b7280!important}.mobile-nav button.active{background:#eef5ff!important;color:#0866ff!important}
-.footer{color:#6b7280!important}
-
 </style>
 <div id="profileCropModal" role="dialog" aria-modal="true" aria-labelledby="cropTitle"><div class="crop-panel"><h2 id="cropTitle" style="margin:0 0 6px">قصّ الصورة قبل الرفع</h2><div id="cropHint" class="small">حرّك موضع القص وكبّر الصورة حتى تظهر بالشكل الذي تريده.</div><div class="crop-preview"><canvas id="profileCropCanvas" width="640" height="640"></canvas></div><label for="cropZoom">تكبير الصورة</label><input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1"><label for="cropX">تحريك أفقي</label><input id="cropX" type="range" min="0" max="100" step="1" value="50"><label for="cropY">تحريك رأسي</label><input id="cropY" type="range" min="0" max="100" step="1" value="50"><div class="crop-actions"><button type="button" id="cropCancel" class="btn ghost">إلغاء</button><button type="button" id="cropApply" class="btn primary">اعتماد القصّ</button></div></div></div>
 
