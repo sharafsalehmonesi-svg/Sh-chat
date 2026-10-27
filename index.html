@@ -584,7 +584,26 @@ function notify(message,kind=""){const n=$("notice");n.className="notice"+(kind?
 function authMessage(message,kind=""){const n=$("authMsg");n.className="notice"+(kind?" "+kind:"");n.textContent=message}
 function time(v){try{return new Date(v).toLocaleString("ar",{dateStyle:"medium",timeStyle:"short"})}catch{return "الآن"}}
 function avatarHTML(p,cls="avatar"){const url=p?.avatar_url;return `<div class="${cls}">${url?`<img src="${esc(url)}" alt="">`:esc(initials(p?.full_name||p?.username||"SH"))}</div>`}
-function requireAuth(){if(currentUser)return true;$("authModal").classList.add("show");setAuthMode("login");return false}
+function requireAuth(){
+ if(currentUser)return true;
+ // Recover the cached Supabase user synchronously before showing login.
+ // Supabase stores persisted sessions under sb-<project-ref>-auth-token.
+ try{
+  const key="sb-inrkzwsnmkmjrgrliusg-auth-token";
+  const raw=window.localStorage.getItem(key);
+  if(raw){
+   const saved=JSON.parse(raw);
+   const user=saved?.user||(saved?.currentSession?.user)||null;
+   if(user && (saved?.access_token||saved?.currentSession?.access_token)){
+    currentUser=user;
+    updateIdentity();
+    ensureProfile(user).then(()=>{updateIdentity();if(activePage==="profile")renderProfile()}).catch(e=>console.warn("Profile recovery:",e));
+    return true;
+   }
+  }
+ }catch(e){console.warn("Cached session recovery:",e)}
+ $("authModal").classList.add("show");setAuthMode("login");return false
+}
 async function ensureProfile(user){
  const {data,error}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
  if(error){console.warn("profile:",error.message);return null}
