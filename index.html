@@ -575,7 +575,7 @@ header{background:rgba(255,255,255,.97) !important;border-color:#e2e7ef !importa
 const SUPABASE_URL="https://inrkzwsnmkmjrgrliusg.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YbLUN2mYUhvWKt4o-TRcUg__cLCmW8V";
 const {createClient}=supabase;
-const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}});
+const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage,storageKey:"sh-chat-auth-v1"}});
 let currentUser=null,profile=null,pendingFile=null,pendingReelFile=null,cachedReels=[],reelCommentsOpen=new Set(),cachedPosts=[],commentsOpen=new Set(),authMode="login",activePage="home",selectedFriend=null,chatChannel=null,feedChannel=null,profileTab="posts",viewedProfileId=null,viewedProfileData=null,myFriends=[],notificationChannel=null,notificationsCache=[],unreadMessageCount=0;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -868,7 +868,22 @@ $("shakeNearbyResults").addEventListener("click",async e=>{const b=e.target.clos
 function disableShake(){window.removeEventListener("devicemotion",handleShake);shakeEnabled=false;shakeStatus("ميزة الرجّ متوقفة.")}
 $("enableShake").onclick=enableShake;$("disableShake").onclick=disableShake;
 window.addEventListener("pagehide",()=>{if(nearbyWatchId!==null)navigator.geolocation?.clearWatch(nearbyWatchId)});
-db.auth.onAuthStateChange((event,session)=>{if(event==="INITIAL_SESSION")return;setTimeout(async()=>{currentUser=session?.user||null;profile=currentUser?await ensureProfile(currentUser):null;updateIdentity();if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()])}else{profile=null;myFriends=[];notificationsCache=[];if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null}updateNotificationBadge();if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}}await loadFeed()},0)});
+db.auth.onAuthStateChange((event,session)=>{
+ // Keep the app state synchronized with Supabase for initial restore, refreshes, and navigation.
+ setTimeout(async()=>{
+  currentUser=session?.user||null;
+  profile=currentUser?await ensureProfile(currentUser):null;
+  updateIdentity();
+  if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);}
+  else{
+   profile=null;myFriends=[];notificationsCache=[];
+   if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null;}
+   updateNotificationBadge();
+   if(chatChannel){db.removeChannel(chatChannel);chatChannel=null;}
+  }
+  if(event!=="INITIAL_SESSION") await loadFeed();
+ },0);
+});
 (async()=>{try{await refreshAuth();await Promise.allSettled([loadFeed(),loadReels()]);if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);notify("تم استعادة جلسة الحساب إن كانت محفوظة على هذا المتصفح.","success")}else{$("authModal").classList.add("show");setAuthMode("login")}}catch(e){notify("تعذّر الاتصال: "+e.message,"error")}})();
 </script>
 </body>
