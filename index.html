@@ -909,7 +909,7 @@ function disableShake(){window.removeEventListener("devicemotion",handleShake);s
 $("enableShake").onclick=enableShake;$("disableShake").onclick=disableShake;
 window.addEventListener("pagehide",()=>{if(nearbyWatchId!==null)navigator.geolocation?.clearWatch(nearbyWatchId)});
 db.auth.onAuthStateChange((event,session)=>{if(event==="INITIAL_SESSION")return;setTimeout(async()=>{currentUser=session?.user||null;profile=currentUser?await ensureProfile(currentUser):null;updateIdentity();if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()])}else{profile=null;myFriends=[];notificationsCache=[];if(notificationChannel){db.removeChannel(notificationChannel);notificationChannel=null}updateNotificationBadge();if(chatChannel){db.removeChannel(chatChannel);chatChannel=null}}await loadFeed()},0)});
-(async()=>{try{await refreshAuth();await Promise.allSettled([loadFeed(),loadReels()]);if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);notify("تم استعادة جلسة الحساب إن كانت محفوظة على هذا المتصفح.","success")}else{$("authModal").classList.add("show");setAuthMode("login")}}catch(e){notify("تعذّر الاتصال: "+e.message,"error")}})();
+(async()=>{try{await refreshAuth();await Promise.allSettled([loadFeed(),loadReels()]);if(currentUser){await Promise.allSettled([loadFriends(),loadIncomingRequests(),startNotificationRealtime()]);notify("مرحبًا بعودتك! تم تحميل جلسة حسابك المحفوظة.","success")}else{setAuthMode("login");notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.")}}catch(e){notify("تعذّر الاتصال: "+e.message,"error")}})();
 </script>
 
 <style>
