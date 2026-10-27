@@ -709,14 +709,26 @@ function showPage(page){
  if(page==="profile")renderProfile();if(page==="friends"){loadFriends();loadIncomingRequests()}if(page==="chat"){loadChatList();unreadMessageCount=0;updateMessageBadge()}if(page==="notifications")loadNotifications();if(page==="settings")fillSettings();
  window.scrollTo({top:0,behavior:"smooth"});
 }
+async function restoreSessionForNavigation(){
+ try{
+  const {data,error}=await db.auth.getSession();
+  if(error)console.warn("Navigation session check:",error.message);
+  const session=data?.session;
+  if(!session?.user)return false;
+  currentUser=session.user;
+  profile=await ensureProfile(currentUser);
+  updateIdentity();
+  return true;
+ }catch(err){console.error("Navigation session restore:",err);return false}
+}
 document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",async()=>{
  const page=b.dataset.page;
  if(["profile","friends","chat","notifications","settings","nearby","shake"].includes(page)){
-  // Recover the persisted Supabase session before deciding to show the login modal.
   if(!currentUser){
-   try{await refreshAuth()}catch(e){console.warn("Could not restore auth before navigation:",e)}
+   const restored=await restoreSessionForNavigation();
+   if(!restored){$("authModal").classList.add("show");setAuthMode("login");return}
   }
-  if(!currentUser){requireAuth();return}
+  if(!currentUser){$("authModal").classList.add("show");setAuthMode("login");return}
  }
  if(page==="profile"){viewedProfileId=null;viewedProfileData=null}
  showPage(page);
@@ -939,7 +951,7 @@ async function applyAuthSession(session){
   updateNotificationBadge();
   updateIdentity();
  }
- await loadFeed();
+ loadFeed().catch(e=>console.error("Feed startup:",e));
 }
 
 function queueAuthSession(event,session){
@@ -948,7 +960,7 @@ function queueAuthSession(event,session){
    if(authBootstrapFinished)return;
    await applyAuthSession(session);
    authBootstrapFinished=true;
-   await Promise.allSettled([loadReels()]);
+   loadReels().catch(e=>console.error("Reels startup:",e));
    if(!currentUser){
     setAuthMode("login");
     notify("أهلًا بك في SH-CHAT. اضغط دخول عندما تريد تسجيل الدخول.");
